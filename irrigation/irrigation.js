@@ -759,7 +759,7 @@ function initAIChat() {
 }
 
 const AI_API = "https://openrouter.ai/api/v1/chat/completions";
-const AI_KEY = "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";
+const AI_KEY = "sk-or-v1-";
 
 async function sendMessage() {
     const userInput = document.getElementById("userInput");
