@@ -1,0 +1,241 @@
+<!doctype html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8" />
+    <title>Settings - HydroGen</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet" />
+    <link rel="stylesheet" href="../theme/theme.css" />
+    <link rel="stylesheet" href="../bootstrap-custom.css" />
+    <link rel="stylesheet" href="../theme/design-system.css" />
+    <!-- Reusing Home.css for header/sidebar consistent styling -->
+    <link rel="stylesheet" href="../home/Home.css" />
+    <link rel="stylesheet" href="settings.css" />
+</head>
+
+<body>
+    <!-- HEADER -->
+    <header class="header">
+        <div class="left_header">
+            <button class="menu-btn" id="menuBtn" aria-label="Open menu">☰</button>
+        </div>
+        <a href="../home/Home.html" class="logo">
+            <img src="../assets/water-drop-rain-drink 1.svg" alt="" class="icon">
+            <span class="brand">HydroGen</span> — Intelligent Water Systems
+        </a>
+        <nav class="nav">
+            <a href="../dashboard/dashboard.html">Dashboard</a>
+            <a href="../irrigation/irrigation.html">Irrigation</a>
+            <a href="../analytics/analytics.html">Analytics</a>
+            <a href="../settings/settings.html" class="active">Settings</a>
+        </nav>
+        <div class="profile-menu">
+            <button class="profile-btn" id="profileBtn">
+                <img src="../assets/Vector.svg" alt="profile">
+            </button>
+            <div class="profile-dropdown" id="profileDropdown">
+                <div class="profile-header">
+                    <div class="avatar">U</div>
+                    <div class="user-info">
+                        <strong id="headerUsername">Youssef</strong>
+                        <p id="headerEmail">admin@hydrogen.com</p>
+                    </div>
+                </div>
+                <hr>
+                <button class="drop-item danger" id="logoutBtn"><img src="../assets/logout.svg" alt="" class="icon">Log
+                    out</button>
+            </div>
+        </div>
+    </header>
+
+    <div class="menu-overlay" id="menuOverlay"></div>
+
+    <!-- SIDEBAR -->
+    <div class="side-menu" id="sideMenu">
+        <button class="close-btn" id="closeBtn">✕</button>
+        <a href="../home/Home.html" class="menu-item"><img src="../assets/Home.svg" class="icon">Home</a>
+        <a href="../dashboard/dashboard.html" class="menu-item"><img src="../assets/Vector 48 (Stroke).svg"
+                class="icon">Dashboard</a>
+        <a href="../irrigation/irrigation.html" class="menu-item"><img src="../assets/water-drop 5.svg"
+                class="icon">Irrigation</a>
+        <a href="../analytics/analytics.html" class="menu-item"><img src="../assets/Trending-up.svg"
+                class="icon">Analytics</a>
+        <a href="../settings/settings.html" class="menu-item active"><img src="../assets/settings-01.svg"
+                class="icon">Settings</a>
+        <div class="theme-section">
+            <button class="theme-row" id="appearanceBtn">🌙 Appearance ›</button>
+            <div class="theme-submenu" id="themeMenu">
+                <button data-theme="system">Use device theme</button>
+                <button data-theme="dark">Dark theme</button>
+                <button data-theme="light">Light theme</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- MAIN SETTINGS CONTENT -->
+    <main class="bento-container">
+        <div class="d-flex justify-content-between align-items-center mb-5">
+            <h1 class="h3 mb-0">System Settings</h1>
+        </div>
+
+        <div class="bento-grid">
+
+            <!-- Profile Settings -->
+            <div class="bento-col-span-4 bento-card glass-card">
+                <h5 class="bento-title mb-4 d-flex align-items-center">
+                    <span class="me-2">👤</span> Profile Information
+                </h5>
+                <form id="profileForm">
+                    <div class="mb-3">
+                        <label for="inputName" class="form-label text-muted small fw-bold">Full Name</label>
+                        <input type="text" class="form-control" id="inputName" value="Youssef">
+                    </div>
+                    <div class="mb-3">
+                        <label for="inputEmail" class="form-label text-muted small fw-bold">Email address</label>
+                        <input type="email" class="form-control" id="inputEmail" value="admin@hydrogen.com">
+                    </div>
+                    <div class="mb-3">
+                        <label for="inputPhone" class="form-label text-muted small fw-bold">Phone Number</label>
+                        <input type="tel" class="form-control" id="inputPhone" value="+20 123 456 7890">
+                    </div>
+                    <button type="submit" class="btn btn-primary w-100 mt-auto">Save Profile</button>
+                </form>
+            </div>
+
+            <!-- Notification Preferences -->
+            <div class="bento-col-span-4 bento-card glass-card">
+                <h5 class="bento-title mb-4 d-flex align-items-center">
+                    <span class="me-2">🔔</span> Notifications
+                </h5>
+                <div class="form-check form-switch mb-4 custom-switch-wrapper d-flex align-items-start">
+                    <input class="form-check-input flex-shrink-0 me-3" type="checkbox" role="switch" id="notifEmail"
+                        checked>
+                    <label class="form-check-label" for="notifEmail">
+                        <span class="d-block fw-bold mb-1">Email Alerts</span>
+                        <span class="d-block text-muted small">Daily summary reports and critical warnings.</span>
+                    </label>
+                </div>
+                <div class="form-check form-switch custom-switch-wrapper d-flex align-items-start">
+                    <input class="form-check-input flex-shrink-0 me-3" type="checkbox" role="switch" id="notifPush"
+                        checked>
+                    <label class="form-check-label" for="notifPush">
+                        <span class="d-block fw-bold mb-1">Push Notifications</span>
+                        <span class="d-block text-muted small">Instant alerts for dry soil or low tank levels.</span>
+                    </label>
+                </div>
+                <button class="btn btn-outline-primary w-100 mt-auto" id="saveNotifBtn">Save Preferences</button>
+            </div>
+
+            <!-- Hardware System Thresholds -->
+            <div class="bento-col-span-4 bento-card glass-card">
+                <h5 class="bento-title mb-4 d-flex align-items-center">
+                    <span class="me-2">⚙️</span> Hardware Thresholds
+                </h5>
+
+                <div class="threshold-item mb-4">
+                    <div class="d-flex justify-content-between mb-2">
+                        <strong class="small text-dark">Low Water Warning</strong>
+                        <span class="badge bg-primary bg-opacity-10 text-primary"><span id="lowWaterValue">350</span>
+                            cm</span>
+                    </div>
+                    <input type="range" class="form-range custom-range" min="100" max="400" step="10"
+                        id="lowWaterThreshold" value="350">
+                    <small class="text-muted d-block mt-1">Alert when tank distance is greater than (cm)</small>
+                </div>
+
+                <div class="threshold-item">
+                    <div class="d-flex justify-content-between mb-2">
+                        <strong class="small text-dark">Dry Soil Override</strong>
+                        <span class="badge bg-warning bg-opacity-10 text-warning"><span id="drySoilValue">20</span>
+                            %</span>
+                    </div>
+                    <input type="range" class="form-range custom-range" min="0" max="50" step="5" id="drySoilThreshold"
+                        value="20">
+                    <small class="text-muted d-block mt-1">Auto-start pumps if moisture falls below (%)</small>
+                </div>
+
+                <button class="btn btn-primary w-100 mt-auto" id="saveThresholdsBtn">Update Hardware</button>
+            </div>
+
+            <!-- Firebase Configuration -->
+            <div class="bento-col-span-12 bento-card glass-card border-primary-subtle">
+                <div class="d-flex justify-content-between align-items-center mb-4">
+                    <h5 class="bento-title d-flex align-items-center">
+                        <span class="me-2">🔥</span> Firebase Realtime DB
+                    </h5>
+                    <span id="fbStatusBadge"
+                        class="badge rounded-pill bg-success-subtle text-success border border-success-subtle px-3">Connected</span>
+                </div>
+
+                <div class="alert glass-alert mb-4">
+                    <div class="d-flex align-items-center gap-2 mb-2">
+                        <strong>⚠️ System Link</strong>
+                    </div>
+                    <p class="mb-0 small opacity-75">These settings control the communication between the web dashboard
+                        and your ESP32 hardware. Incorrect values will stop the data flow.</p>
+                </div>
+
+                <form id="firebaseConfigForm">
+                    <div class="row g-4 mb-4">
+                        <div class="col-md-12">
+                            <label for="fbDatabaseUrl" class="form-label text-muted small fw-bold">Database URL</label>
+                            <input type="text" class="form-control glass-input" id="fbDatabaseUrl"
+                                placeholder="https://your-project.firebaseio.com" required>
+                        </div>
+
+                        <div class="col-md-6">
+                            <label for="fbApiKey" class="form-label text-muted small fw-bold">API Key</label>
+                            <input type="password" class="form-control glass-input" id="fbApiKey"
+                                placeholder="AIzaSy..." required>
+                        </div>
+
+                        <div class="col-md-6">
+                            <label for="fbProjectId" class="form-label text-muted small fw-bold">Project ID</label>
+                            <input type="text" class="form-control glass-input" id="fbProjectId"
+                                placeholder="your-project-id" required>
+                        </div>
+                    </div>
+
+                    <div class="d-flex justify-content-end gap-3">
+                        <button type="button" class="btn btn-link text-muted text-decoration-none"
+                            id="resetFbConfigBtn">Reset Defaults</button>
+                        <button type="submit" class="btn btn-primary px-4">
+                            Save Connection
+                        </button>
+                    </div>
+                </form>
+            </div>
+
+        </div>
+    </main>
+    </main>
+
+    <!-- Toast Notification Container -->
+    <div class="toast-container position-fixed bottom-0 end-0 p-3">
+        <div id="saveToast" class="toast" role="alert" aria-live="assertive" aria-atomic="true">
+            <div class="toast-header bg-success text-white">
+                <strong class="me-auto">Success</strong>
+                <button type="button" class="btn-close btn-close-white" data-bs-dismiss="toast"
+                    aria-label="Close"></button>
+            </div>
+            <div class="toast-body bg-white text-dark">
+                Settings saved successfully.
+            </div>
+        </div>
+    </div>
+
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
+    <script src="../home/home.js"></script>
+    <script src="../theme/theme.js"></script>
+
+    <!-- Settings Logic -->
+    <!-- Firebase SDKs (Compat version for local file:// execution) -->
+    <script src="https://www.gstatic.com/firebasejs/10.7.1/firebase-app-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/10.7.1/firebase-database-compat.js"></script>
+    <!-- Firebase Config & Logic -->
+    <script src="../firebase/firebase-config.js"></script>
+    <script src="settings.js"></script>
+</body>
+
+</html>
