@@ -37,7 +37,7 @@ body.dark .nav a.active {
 
 :root {
     --bg-color: #fbfdf7;
-    --text-color: #1b1b1b;
+    --text-color: var(--text);
     --card-bg: #ffffff;
     --header-bg: #06420d;
     --border-color: #e5e5e5;
@@ -62,7 +62,7 @@ body.dark {
 
 body {
     background: var(--bg-color);
-    color: var(--text-color);
+    color: var(--text);
     transition:
         background 0.3s,
         color 0.3s;

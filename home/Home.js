@@ -1,3 +1,10 @@
+// ── Auth Guard ──
+(function () {
+  if (!localStorage.getItem("hydroUser")) {
+    window.location.replace("../landing/landing.html");
+  }
+})();
+
 document.querySelectorAll(".card, .plan-card, .tracker-card").forEach(item => {
   item.addEventListener("click", () => {
     alert("This page will be available soon");
@@ -31,9 +38,6 @@ const observer = new IntersectionObserver(entries=>{
   });
 },{threshold:0.2});
 
-document.querySelectorAll(".feature-card")
-.forEach(card=>observer.observe(card));
-
 
 
 const reveals = document.querySelectorAll(".reveal");
@@ -48,9 +52,18 @@ window.addEventListener("scroll", () => {
 });
 
 
-document.querySelectorAll(".feature-card").forEach(card => {
-  card.addEventListener("click", () => {
-    card.classList.toggle("flip");
+
+const cards = document.querySelectorAll(".features");
+
+window.addEventListener("scroll", () => {
+  cards.forEach((card, index) => {
+    const cardTop = card.getBoundingClientRect().top;
+
+    if(cardTop < window.innerHeight - 100){
+      setTimeout(()=>{
+        card.classList.add("show");
+      }, index * 150); // stagger effect 🔥
+    }
   });
 });
 
@@ -79,11 +92,21 @@ const testimonials = [
 let index = 0;
 
 function updateTestimonial() {
-  const t = testimonials[index];
+  const card = document.getElementById("testimonialCard");
+
+  card.classList.add("fade"); 
+
+  setTimeout(() => {
+    const t = testimonials[index];
+
   document.getElementById("quote").innerText = `“${t.quote}”`;
   document.getElementById("name").innerText = t.name;
-  document.getElementById("role").innerText = t.role;
-  document.getElementById("avatar").src = t.avatar;
+    document.getElementById("role").innerText = t.role;
+    document.getElementById("avatar").src = t.avatar;
+    card.classList.remove("fade"); 
+    updateDots();
+
+  }, 200);
 }
 
 function nextTestimonial() {
@@ -96,7 +119,7 @@ function prevTestimonial() {
   updateTestimonial();
 }
 
-
+// notif + logout handled by theme.js
 
 
 document.querySelectorAll(".dash-btn").forEach(btn => {
@@ -106,3 +129,35 @@ document.querySelectorAll(".dash-btn").forEach(btn => {
   });
 });
 
+// dots control
+function goToTestimonial(i){
+  index = i;
+  updateTestimonial();
+}
+
+
+function updateDots(){
+  document.querySelectorAll(".dot").forEach((dot, i)=>{
+    dot.classList.toggle("active", i === index);
+  });
+}
+let startX = 0;
+let endX = 0;
+
+const card = document.getElementById("testimonialCard");
+
+card.addEventListener("touchstart", (e) => {
+  startX = e.touches[0].clientX;
+});
+
+card.addEventListener("touchend", (e) => {
+  endX = e.changedTouches[0].clientX;
+
+  if(startX - endX > 50){
+    nextTestimonial(); // swipe left
+  }
+
+  if(endX - startX > 50){
+    prevTestimonial(); // swipe right
+  }
+});

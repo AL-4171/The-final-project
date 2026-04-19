@@ -31,42 +31,6 @@ body {
 }
 
 
-.nav a {
-    margin-left: 15px;
-    text-decoration: none;
-    padding: 8px 16px;
-    border-radius: 20px;
-    font-size: 14px;
-    font-weight: 600;
-    background: #fff;
-    color: var(--header-bg);
-    transition: .3s;
-}
-.nav a:hover {
-    background: var(--accent);
-    color: #fff;
-}
-.nav a.active {
-    background: #16631f;
-    color: white;
-}
-
-body.dark .nav a{
-    background:white;
-    color:var(--header);
-}
-body.dark .nav a:hover {
-    background: var(--accent);
-    color: #fff;
-}
-body.dark .nav a.active {
-    background: #334155;
-    color: white;
-}
-
-
-
-
 
 .login-section {
     min-height: 100vh;
@@ -307,7 +271,7 @@ body.dark .nav a.active {
 #googleBtn {
     background: white;
     border: 1px solid #ccc;
-    color: #333;
+    color: var(--text);
     display: flex;
     align-items: center;
     justify-content: center;
@@ -372,7 +336,7 @@ body.dark .nav a.active {
     padding:40px;
   }
 
-  /* يظهر نص الشمال بس مش كله */
+  
   .hero .left{
     max-width:600px;
     margin:auto;
@@ -392,7 +356,7 @@ body.dark .nav a.active {
     animation:fadeUp .8s ease;
   }
 
-  /* الفورم في النص */
+  
   .login-box,
   .register-box{
     max-width:520px;

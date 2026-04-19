@@ -1,13 +1,11 @@
 <!doctype html>
 <html lang="en">
-  <head>
+
+<head>
     <meta charset="UTF-8" />
     <title>Dashboard - HydroGen</title>
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <link
-      href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css"
-      rel="stylesheet"
-    />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet" />
     <link rel="stylesheet" href="../theme/theme.css" />
     <link rel="stylesheet" href="../bootstrap-custom.css" />
     <link rel="stylesheet" href="../theme/design-system.css" />
@@ -15,863 +13,445 @@
     <link rel="stylesheet" href="dashboard.css" />
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/chartjs-adapter-date-fns"></script>
-    <link
-      href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css"
-      rel="stylesheet"
-    />
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
     <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
-    <style>
-      /* 3D Tank Styles */
-      .tank-3d {
-        width: 220px;
-        height: 300px;
-        background: linear-gradient(
-          145deg,
-          rgba(255, 255, 255, 0.15) 0%,
-          rgba(255, 255, 255, 0.05) 100%
-        );
-        border-radius: 30px;
-        position: relative;
-        overflow: hidden;
-        box-shadow:
-          20px 20px 40px rgba(0, 0, 0, 0.3),
-          inset 0 0 30px rgba(255, 255, 255, 0.1),
-          0 0 0 2px rgba(255, 255, 255, 0.15);
-        border: 1px solid rgba(255, 255, 255, 0.25);
-        margin: 0 auto;
-      }
+</head>
 
-      .water-fill {
-        position: absolute;
-        bottom: 0;
-        left: 0;
-        width: 100%;
-        background: linear-gradient(180deg, #60a5fa 0%, #1e40af 100%);
-        transition: height 1.2s cubic-bezier(0.34, 1.2, 0.64, 1);
-        border-radius: 0 0 28px 28px;
-        box-shadow: inset 0 8px 12px rgba(34, 31, 31, 0.3);
-      }
-
-      .water-wave-animation {
-        position: absolute;
-        top: -18px;
-        left: -10%;
-        width: 120%;
-        height: 28px;
-        background: rgba(255, 255, 255, 0.35);
-        border-radius: 45%;
-        animation: waveMove 5s linear infinite;
-      }
-
-      .wave-2 {
-        top: -22px;
-        animation-duration: 7s;
-        opacity: 0.5;
-      }
-      .wave-3 {
-        top: -14px;
-        animation-duration: 9s;
-        opacity: 0.3;
-      }
-
-      @keyframes waveMove {
-        0% {
-          transform: translateX(0) rotate(0deg);
-        }
-        100% {
-          transform: translateX(-50%) rotate(360deg);
-        }
-      }
-
-      .tank-percent-label {
-        position: absolute;
-        top: 50%;
-        left: 50%;
-        transform: translate(-50%, -50%);
-        background: rgba(0, 0, 0, 0.75);
-        -webkit-backdrop-filter: blur(12px);
-        backdrop-filter: blur(12px);
-        padding: 8px 16px;
-        border-radius: 30px;
-        font-weight: bold;
-        color: white;
-        font-size: 1.2rem;
-        z-index: 10;
-        border: 1px solid rgba(255, 255, 255, 0.2);
-      }
-
-      .tank-scale-markers {
-        position: absolute;
-        inset: 0;
-        pointer-events: none;
-        z-index: 5;
-        padding: 20px 0;
-      }
-
-      .tick-marker {
-        position: absolute;
-        left: 12px;
-        width: 25px;
-        height: 2px;
-        background: rgba(140, 135, 135, 0.6);
-        border-radius: 2px;
-      }
-
-      .tick-marker span {
-        position: absolute;
-        left: 35px;
-        top: 50%;
-        transform: translateY(-50%);
-        font-size: 9px;
-        color: rgba(83, 68, 68, 0.9);
-        font-weight: 600;
-      }
-
-      .tank-base-shadow {
-        position: absolute;
-        bottom: -15px;
-        left: 50%;
-        transform: translateX(-50%);
-        width: 180px;
-        height: 22px;
-        background: linear-gradient(
-          180deg,
-          rgba(0, 0, 0, 0.3) 0%,
-          rgba(0, 0, 0, 0.5) 100%
-        );
-        border-radius: 0 0 20px 20px;
-        z-index: 3;
-        box-shadow: 0 6px 12px rgba(10, 10, 10, 0.3);
-      }
-
-      .bubbles-container {
-        position: absolute;
-        bottom: 0;
-        left: 0;
-        width: 100%;
-        height: 100%;
-        z-index: 2;
-        pointer-events: none;
-      }
-
-      .bubble-item {
-        position: absolute;
-        bottom: -20px;
-        background: radial-gradient(
-          circle,
-          rgba(255, 255, 255, 0.5) 0%,
-          rgba(255, 255, 255, 0.1) 100%
-        );
-        border-radius: 50%;
-        animation: bubbleFloat var(--duration) ease-in infinite;
-        opacity: 0;
-      }
-
-      .bubble-item:nth-child(1) {
-        left: 15%;
-        width: 8px;
-        height: 8px;
-        --duration: 4s;
-      }
-      .bubble-item:nth-child(2) {
-        left: 35%;
-        width: 12px;
-        height: 12px;
-        --duration: 5.5s;
-        animation-delay: 1s;
-      }
-      .bubble-item:nth-child(3) {
-        left: 55%;
-        width: 6px;
-        height: 6px;
-        --duration: 3.8s;
-        animation-delay: 2s;
-      }
-      .bubble-item:nth-child(4) {
-        left: 75%;
-        width: 10px;
-        height: 10px;
-        --duration: 6s;
-        animation-delay: 0.5s;
-      }
-      .bubble-item:nth-child(5) {
-        left: 85%;
-        width: 7px;
-        height: 7px;
-        --duration: 4.5s;
-        animation-delay: 1.5s;
-      }
-      .bubble-item:nth-child(6) {
-        left: 45%;
-        width: 14px;
-        height: 14px;
-        --duration: 7s;
-        animation-delay: 0.8s;
-      }
-
-      @keyframes bubbleFloat {
-        0% {
-          transform: translateY(0) scale(0.8);
-          opacity: 0;
-        }
-        20% {
-          opacity: 0.6;
-        }
-        100% {
-          transform: translateY(-320px) scale(1.3);
-          opacity: 0;
-        }
-      }
-
-      /* Dynamic Sensor Cards with Wave Effects */
-      .sensor-card {
-        border-radius: 20px;
-        padding: 1.2rem;
-        transition: all 0.3s ease;
-        text-align: center;
-        color: white;
-        position: relative;
-        overflow: hidden;
-        height: 100%;
-        cursor: pointer;
-      }
-
-      .sensor-card::before {
-        content: "";
-        position: absolute;
-        top: -50%;
-        left: -50%;
-        width: 200%;
-        height: 200%;
-        background: radial-gradient(
-          circle,
-          rgba(255, 255, 255, 0.4) 0%,
-          transparent 70%
-        );
-        animation: waveGlow 8s linear infinite;
-        opacity: 0;
-        transition: opacity 0.5s;
-      }
-
-      .sensor-card:hover::before {
-        opacity: 0.6;
-      }
-
-      .sensor-card:hover {
-        transform: translateY(-6px);
-        box-shadow: 0 15px 30px rgba(0, 0, 0, 0.2);
-      }
-
-      @keyframes waveGlow {
-        0% {
-          transform: rotate(0deg);
-        }
-        100% {
-          transform: rotate(360deg);
-        }
-      }
-
-      /* Dynamic Temperature Colors */
-      .temp-critical {
-        background: linear-gradient(135deg, #dc2626, #991b1b);
-        animation: pulseRed 1.5s infinite;
-      }
-      .temp-hot {
-        background: linear-gradient(135deg, #f97316, #ea580c);
-      }
-      .temp-normal {
-        background: linear-gradient(135deg, #22c55e, #16a34a);
-      }
-      .temp-cold {
-        background: linear-gradient(135deg, #3b82f6, #2563eb);
-      }
-
-      /* Dynamic Humidity Colors */
-      .hum-wet {
-        background: linear-gradient(135deg, #3b82f6, #1d4ed8);
-      }
-      .hum-normal {
-        background: linear-gradient(135deg, #06b6d4, #0891b2);
-      }
-      .hum-dry {
-        background: linear-gradient(135deg, #f97316, #ea580c);
-      }
-      .hum-critical {
-        background: linear-gradient(135deg, #dc2626, #991b1b);
-        animation: pulseRed 1.5s infinite;
-      }
-
-      /* Dynamic Soil Colors */
-      .soil-wet {
-        background: linear-gradient(135deg, #3b82f6, #1d4ed8);
-      }
-      .soil-optimal {
-        background: linear-gradient(135deg, #22c55e, #16a34a);
-        animation: pulseGreen 2s infinite;
-      }
-      .soil-dry {
-        background: linear-gradient(135deg, #f97316, #ea580c);
-      }
-      .soil-critical {
-        background: linear-gradient(135deg, #dc2626, #991b1b);
-        animation: pulseRed 1.5s infinite;
-      }
-
-      /* Pump Colors */
-      .pump-on {
-        background: linear-gradient(135deg, #09e79d, #38f3b8);
-        animation: pumpPulse 1.5s infinite;
-      }
-      .pump-off {
-        background: linear-gradient(135deg, #6b7280, #4b5563);
-      }
-
-      @keyframes pumpPulse {
-        0%,
-        100% {
-          opacity: 1;
-          transform: scale(1);
-        }
-        50% {
-          opacity: 0.85;
-          transform: scale(1.02);
-        }
-      }
-
-      @keyframes pulseRed {
-        0%,
-        100% {
-          opacity: 1;
-        }
-        50% {
-          opacity: 0.8;
-        }
-      }
-
-      @keyframes pulseGreen {
-        0%,
-        100% {
-          opacity: 1;
-        }
-        50% {
-          opacity: 0.85;
-        }
-      }
-
-      .sensor-card h3,
-      .sensor-card h6,
-      .sensor-card small {
-        color: white;
-      }
-
-      .sensor-card small {
-        opacity: 0.9;
-      }
-
-      /* Sensor Grid */
-      .sensor-grid {
-        display: grid;
-        grid-template-columns: repeat(2, 1fr);
-        gap: 1rem;
-      }
-
-      /* Switch Toggle */
-      .switch {
-        position: relative;
-        display: inline-block;
-        width: 55px;
-        height: 28px;
-      }
-
-      .switch input {
-        opacity: 0;
-        width: 0;
-        height: 0;
-      }
-
-      .slider {
-        position: absolute;
-        cursor: pointer;
-        background-color: #cbd5e1;
-        border-radius: 34px;
-        top: 0;
-        left: 0;
-        right: 0;
-        bottom: 0;
-        transition: 0.4s;
-      }
-
-      .slider:before {
-        position: absolute;
-        content: "";
-        height: 22px;
-        width: 22px;
-        left: 4px;
-        bottom: 3px;
-        background-color: white;
-        border-radius: 50%;
-        transition: 0.4s;
-      }
-
-      input:checked + .slider {
-        background-color: #10b981;
-      }
-
-      input:checked + .slider:before {
-        transform: translateX(26px);
-      }
-
-      /* Weather Card */
-      .weather-card {
-        left: 100px;
-        background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-        border-radius: 20px;
-        padding: 20px;
-        color: white;
-        height: 100%;
-        margin-left: 10px;
-      }
-
-      .weather-refresh-btn {
-        transition: all 0.3s ease;
-        background: rgba(255, 255, 255, 0.2);
-        border: none;
-        color: white;
-        padding: 8px 16px;
-        border-radius: 30px;
-        display: flex;
-        align-items: center;
-        gap: 8px;
-      }
-
-      .weather-refresh-btn:hover {
-        transform: rotate(180deg);
-        background: rgba(255, 255, 255, 0.3);
-      }
-
-      .forecast-horizontal {
-        display: flex;
-        gap: 12px;
-        overflow-x: auto;
-        padding: 10px 0;
-      }
-
-      .forecast-item {
-        background: rgba(255, 255, 255, 0.2);
-        border-radius: 16px;
-        padding: 10px;
-        min-width: 100px;
-        text-align: center;
-      }
-
-      /* AI Button */
-      .ai-toggle-btn.ai-active {
-        background: #10b981 !important;
-        color: white !important;
-        border-color: #10b981 !important;
-      }
-
-      .live-badge {
-        animation: pulse 2s infinite;
-      }
-
-      @keyframes pulse {
-        0%,
-        100% {
-          opacity: 1;
-        }
-        50% {
-          opacity: 0.6;
-        }
-      }
-
-      /* Alert Styles */
-      .alert-item {
-        padding: 12px;
-        border-radius: 12px;
-        margin-bottom: 10px;
-        display: flex;
-        gap: 12px;
-        animation: slideIn 0.3s ease;
-      }
-
-      .alert-critical {
-        background: #fee2e2;
-        border-left: 4px solid #ef4444;
-        color: #991b1b;
-      }
-
-      .alert-warning {
-        background: #fff3e0;
-        border-left: 4px solid #f59e0b;
-        color: #92400e;
-      }
-
-      .alert-success {
-        background: #d1fae5;
-        border-left: 4px solid #10b981;
-        color: #065f46;
-      }
-
-      @keyframes slideIn {
-        from {
-          opacity: 0;
-          transform: translateX(30px);
-        }
-        to {
-          opacity: 1;
-          transform: translateX(0);
-        }
-      }
-
-      /* Graph Container */
-      .graph-container {
-        min-height: 350px;
-      }
-
-      @media (max-width: 768px) {
-        .tank-3d {
-          width: 180px;
-          height: 260px;
-        }
-        .tank-base-shadow {
-          width: 150px;
-        }
-        .sensor-grid {
-          grid-template-columns: 1fr;
-        }
-        .forecast-horizontal {
-          gap: 8px;
-        }
-        .forecast-item {
-          min-width: 80px;
-        }
-      }
-    </style>
-  </head>
-
-  <body>
-    <header class="header">
-      <div class="left_header">
+<body>
+  <header class="header">
+    <nav class="main-nav">
+      <div class="nav-left">
         <button class="menu-btn" id="menuBtn" aria-label="Open menu">☰</button>
+        <a href="../home/Home.html" class="logo">
+          <img src="../assets/water-drop-rain-drink 1.svg" alt="HydroGen Logo" class="icon">
+          <span class="logo">HydroGen</span>
+          <span class="divider"></span>
+        </a>
+        <div class="nav-links">
+          <a href="../dashboard/dashboard.html">Dashboard</a>
+          <a href="../irrigation/irrigation.html">Irrigation</a>
+          <a href="../analytics/analytics.html">Analytics</a>
+          <a href="../settings/settings.html">Settings</a>
+        </div>
       </div>
-      <a href="../home/Home.html" class="logo">
-        <img src="../assets/water-drop-rain-drink 1.svg" alt="" class="icon" />
-        <span class="brand">HydroGen</span> — Intelligent Water Systems
-      </a>
-      <nav class="nav">
-        <a href="../dashboard/dashboard.html" class="active">Dashboard</a>
-        <a href="../irrigation/irrigation.html">Irrigation</a>
-        <a href="../analytics/analytics.html">Analytics</a>
-        <a href="../settings/settings.html">Settings</a>
-      </nav>
+    </nav>
+
+    <div class="nav-right">
+      <div class="notification-wrapper">
+        <i class="fas fa-bell notification-icon" id="notifToggle"></i>
+        <span class="notif-badge" id="notifBadge"></span>
+        <div class="notification-dropdown">
+          <div class="bento-card">
+            <h6>Active Alerts</h6>
+            <div id="alertsContainer"></div>
+          </div>
+        </div>
+      </div>
       <div class="profile-menu">
         <button class="profile-btn" id="profileBtn">
-          <img src="../assets/Vector.svg" alt="profile" />
+          <img src="../assets/Vector.svg" id="profileImage" alt="profile">
         </button>
         <div class="profile-dropdown" id="profileDropdown">
           <div class="profile-header">
-            <div class="avatar">U</div>
-            <div class="user-info">
-              <strong id="username">Youssef</strong>
-              <p id="email">admin@hydrogen.com</p>
-            </div>
+    <div class="avatar">U</div>
+          <div class="user-info">
+            <strong id="username">User Name</strong>
+            <p id="email">email@example.com</p>
           </div>
-          <hr />
-          <button class="drop-item danger" id="logoutBtn">
-            <img src="../assets/logout.svg" alt="" class="icon" />Log out
-          </button>
         </div>
+
+        <hr>
+
+        <button class="drop-item"><img src="../assets/switch.svg" alt="" class="icon">Switch account</button>
+        
+        <button class="drop-item danger" id="logoutBtn"><img src="../assets/logout.svg" alt="" class="icon">Log
+          out</button>
+            <div class="theme-section">
+      <button class="theme-row" id="appearanceBtn">
+        🌙 Appearance ›
+      </button>
+
+      <div class="theme-submenu" id="themeMenu">
+        <button data-theme="system">Use device theme</button>
+        <button data-theme="dark">Dark theme</button>
+        <button data-theme="light">Light theme</button>
       </div>
-    </header>
 
-    <div class="menu-overlay" id="menuOverlay"></div>
-
-    <div class="side-menu" id="sideMenu">
-      <button class="close-btn" id="closeBtn">✕</button>
-      <a href="../home/Home.html" class="menu-item">
-        <img src="../assets/Home.svg" class="icon" alt="Home" />Home</a
-      >
-      <a href="../dashboard/dashboard.html" class="menu-item active"
-        ><img
-          src="../assets/Vector 48 (Stroke).svg"
-          class="icon"
-          alt="Dashboard"
-        />Dashboard</a
-      >
-      <a href="../irrigation/irrigation.html" class="menu-item"
-        ><img
-          src="../assets/water-drop 5.svg"
-          class="icon"
-          alt="Irrigation"
-        />Irrigation</a
-      >
-      <a href="../analytics/analytics.html" class="menu-item"
-        ><img
-          src="../assets/Trending-up.svg"
-          class="icon"
-          alt="Analytics"
-        />Analytics</a
-      >
-      <a href="../settings/settings.html" class="menu-item"
-        ><img
-          src="../assets/settings-01.svg"
-          class="icon"
-          alt="Settings"
-        />Settings</a
-      >
-      <div class="theme-section">
-        <button class="theme-row" id="appearanceBtn">🌙 Appearance ›</button>
-        <div class="theme-submenu" id="themeMenu">
-          <button data-theme="system">Use device theme</button>
-          <button data-theme="dark">Dark theme</button>
-          <button data-theme="light">Light theme</button>
-        </div>
+    </div>
+      </div>
       </div>
     </div>
+  </header>
+
+  <div class="menu-overlay" id="menuOverlay"></div>
+
+  <!-- SIDEBAR -->
+  <div class="side-menu" id="sideMenu">
+    <button class="close-btn" id="closeBtn">✕</button>
+    <a href="../home/Home.html" class="menu-item"> <img src="../assets/Home.svg" class="icon">Home</a>
+    <a href="../dashboard/dashboard.html" class="menu-item active"><img src="../assets/Vector 48 (Stroke).svg"
+        class="icon">Dashboard</a>
+    <a href="../irrigation/irrigation.html" class="menu-item"><img src="../assets/water-drop 5.svg"
+        class="icon">Irrigation</a>
+    <a href="../analytics/analytics.html" class="menu-item"><img src="../assets/Trending-up.svg"
+        class="icon">Analytics</a>
+    <a href="../settings/settings.html" class="menu-item"><img src="../assets/settings-01.svg" class="icon">Settings</a>
+  </div>
+
+
 
     <main class="bento-container">
-      <div class="d-flex justify-content-between align-items-center mb-4">
-        <h1 class="h3 mb-0">System Dashboard</h1>
-        <div class="d-flex gap-3 align-items-center">
-          <button
-            id="aiToggle"
-            class="btn btn-sm btn-outline-success rounded-pill px-3 ai-toggle-btn"
-          >
-            <i class="fas fa-brain"></i> AI: OFF
-          </button>
-          <div class="btn-group btn-group-sm">
-            <button onclick="downloadPDF('hour')" class="btn btn-primary">
-              📄 Hourly
-            </button>
-            <button onclick="downloadPDF('day')" class="btn btn-primary">
-              📄 Daily
-            </button>
-            <button onclick="downloadPDF('month')" class="btn btn-primary">
-              📄 Monthly
-            </button>
-          </div>
-          <span id="liveBadge" class="badge bg-secondary p-2 live-badge"
-            >● Disconnected</span
-          >
-        </div>
-      </div>
+        <div class="hero-card">
+            <div class="hero-content">
+                <span class="badge">SYSTEM DASHBOARD</span>
+                <h1>
+                    Smart <span>Hydro System</span>
+                </h1>
+                <p>
+                    Precision monitoring and intelligent irrigation control
+                    for optimal plant growth and water efficiency.
+                </p>
 
-      <!-- Row 1: Tank and Sensor Cards Side by Side -->
-
-      <div class="d-flex justify-content-between mt-4">
-        <div class="col-lg-5 col-md-6">
-          <div class="bento-card h-100 w-80 text-center">
-            <h5 class="bento-title mb-3">
-              Water Storage
-              <img src="../assets/waterdrop.svg" width="22" alt="Water tank" />
-            </h5>
-            <div class="position-relative d-inline-block tank-container">
-              <div class="tank-3d">
-                <div class="bubbles-container">
-                  <div class="bubble-item"></div>
-                  <div class="bubble-item"></div>
-                  <div class="bubble-item"></div>
-                  <div class="bubble-item"></div>
-                  <div class="bubble-item"></div>
-                  <div class="bubble-item"></div>
+                <div class="hero-buttons">
+                    <button class="btn-primary" data-link="../home/Home.html">System Overview</button>
+                    <button class="btn-secondary" data-link="../settings/settings.html">Control Panel</button>
                 </div>
-                <div
-                  id="tankLevelFill"
-                  class="water-fill tank-fill"
-                  data-level="0"
-                >
-                  <div class="water-wave-animation"></div>
-                  <div class="water-wave-animation wave-2"></div>
-                  <div class="water-wave-animation wave-3"></div>
+            </div>
+        </div>
+
+
+        <div class="d-flex justify-content-between align-items-center mb-4">
+            <h1 class="h3 mb-0">System Dashboard</h1>
+            <div class="d-flex gap-3 align-items-center">
+                <div class="report-dropdown">
+
+                    <button class="download-btn">
+                        Download Report
+                    </button>
+
+                    <div class="dropdown-menu">
+                        <button onclick="downloadPDF('hour')">Hourly Report</button>
+                        <button onclick="downloadPDF('day')">Daily Report</button>
+                    </div>
+
                 </div>
-                <div id="tankLevelPercent" class="tank-percent-label">0%</div>
-                <div class="tank-scale-markers">
-                  <div class="tick-marker" data-position="3">
-                    <span>0%</span>
-                  </div>
-                  <div class="tick-marker" data-position="25">
-                    <span>25%</span>
-                  </div>
-                  <div class="tick-marker" data-position="50">
-                    <span>50%</span>
-                  </div>
-                  <div class="tick-marker" data-position="75">
-                    <span>75%</span>
-                  </div>
-                  <div class="tick-marker" data-position="97">
-                    <span>100%</span>
-                  </div>
+            </div>
+        </div>
+
+        <!-- Row 1: Tank and Sensor Cards Side by Side -->
+
+
+
+        <div class="sensors-grid">
+
+            
+            <div class="tank-container">
+                <div class="bento-card  w-80 text-center">
+                    <h5 class="bento-title mb-3">Water Storage <img src="../assets/waterdrop.svg" width="22" alt="">
+                    </h5>
+                    <div class="position-relative d-inline-block" style="margin: 0 auto;">
+                        <div class="tank-3d">
+                            <div class="bubbles-container">
+                                <div class="bubble-item"></div>
+                                <div class="bubble-item"></div>
+                                <div class="bubble-item"></div>
+                                <div class="bubble-item"></div>
+                                <div class="bubble-item"></div>
+                                <div class="bubble-item"></div>
+                            </div>
+                            <div id="tankLevelFill" class="water-fill" style="height: 0%;">
+                                <div class="water-wave-animation"></div>
+                                <div class="water-wave-animation wave-2"></div>
+                                <div class="water-wave-animation wave-3"></div>
+                            </div>
+                            <div id="tankLevelPercent" class="tank-percent-label">0%</div>
+                            <div class="tank-scale-markers">
+                                <div class="tick-marker" style="bottom: 3%"><span>0%</span></div>
+                                <div class="tick-marker" style="bottom: 25%"><span>25%</span></div>
+                                <div class="tick-marker" style="bottom: 50%"><span>50%</span></div>
+                                <div class="tick-marker" style="bottom: 75%"><span>75%</span></div>
+                                <div class="tick-marker" style="bottom: 97%"><span>100%</span></div>
+                            </div>
+                        </div>
+                        <div class="tank-base-shadow"></div>
+                    </div>
+                    <div class="d-flex justify-content-between mt-4">
+                        <div class="text-center">
+                            <small>Current Level</small>
+                            <strong id="tankLevelCm" class="d-block text-primary">-- L</strong>
+                            <small id="tankLevelCmValue" class="text-muted">-- cm</small>
+                        </div>
+                        <div class="text-center">
+                            <small>Capacity</small>
+                            <strong class="d-block">2 Liters</strong>
+                            <small>30 cm</small>
+                        </div>
+                    </div>
+                    <div class="tank-progress-card">
+
+                        <div class="progress-header">
+                            <span>Water Storage Level</span>
+                            <span id="tankPercentText">0%</span>
+                        </div>
+
+                        <div class="progress-bar">
+                            <div id="tankProgressFill"></div>
+                        </div>
+
+                        <div class="progress-footer">
+                            <span id="tankLitersText">-- / -- L</span>
+                        </div>
+
+                    </div>
                 </div>
-              </div>
-              <div class="tank-base-shadow"></div>
+
             </div>
-            <div class="d-flex justify-content-between mt-4">
-              <div class="text-center">
-                <small>Current Level</small>
-                <strong id="tankLevelCm" class="d-block text-primary"
-                  >-- L</strong
-                >
-                <small id="tankLevelCmValue" class="text-muted">-- cm</small>
-              </div>
-              <div class="text-center">
-                <small>Capacity</small>
-                <strong class="d-block">2 Liters</strong>
-                <small>30 cm</small>
-              </div>
+
+
+
+            <!-- Temperature -->
+
+            <div class="sensor-wrapper" style=" margin: 80px 0px 20px 0px;">
+
+                
+                <div class="sensor-icon">
+                    <img src="../assets/temp.svg">
+                </div>
+
+                
+                <div class="sensor-modern pyramid" id="cardTemp">
+                    <p class="sensor-title">Temperature</p>
+
+                    <div class="sensor-bottom">
+                        <h2 class="sensor-value" id="envTemp">--°C</h2>
+                        <span class="status" id="tempStatus">--</span>
+                    </div>
+
+                    <small class="sensor-sub">Live reading</small>
+                </div>
+
             </div>
-          </div>
+
+            <div class="sensor-wrapper" style=" margin: 80px 0px 20px 0px;">
+
+                <div class="sensor-icon humidity">
+                    <img src="../assets/humedity.svg">
+                </div>
+
+                <div class="sensor-modern pyramid" id="cardHum">
+                    <p class="sensor-title">Humidity</p>
+
+                    <div class="sensor-bottom">
+                        <h2 class="sensor-value" id="envHum">--%</h2>
+                        <span class="status" id="humStatus">--</span>
+                    </div>
+
+                    <small class="sensor-sub">Live reading</small>
+                </div>
+
+            </div>
+
+
+            <div class="sensor-wrapper" style=" margin-bottom: 50px ">
+
+                <div class="sensor-icon soil">
+                    <img src="../assets/soil.svg">
+                </div>
+
+                <div class="sensor-modern pyramid" id="cardSoil">
+                    <p class="sensor-title">Soil Moisture</p>
+
+                    <div class="sensor-bottom">
+                        <h2 class="sensor-value" id="envSoil">--%</h2>
+                        <span class="status" id="soilStatus">--</span>
+                    </div>
+
+                    <small class="sensor-sub">Live reading</small>
+                </div>
+
+            </div>
+
+
+            <div class="sensor-wrapper" style=" margin-bottom: 50px;">
+
+                
+                <div class="sensor-icon pump">
+                    <img src="../assets/pump.svg">
+                </div>
+
+                
+                <div class="sensor pump-card" id="cardPump">
+
+                    
+                    <span class="status pump-status" id="pumpStatusText">OFF</span>
+
+                    <p class="sensor-title">Main Pump</p>
+
+                    <!-- controls -->
+                    <div class="switch-row">
+                        <span>Manual</span>
+                        <label class="switch">
+                            <input type="checkbox" id="pumpToggle">
+                            <span class="slider"></span>
+                        </label>
+                    </div>
+
+                    <div class="switch-row">
+                        <span>AI Mode</span>
+                        <label class="switch">
+                            <input type="checkbox" id="aiToggle">
+                            <span class="slider"></span>
+                        </label>
+                    </div>
+
+                </div>
+
+            </div>
+
+
         </div>
 
-        <div class="col-lg-6 col-md-12">
-          <h5 class="bento-title mb-4">Live Environment</h5>
-          <div class="sensor-grid">
-            <div id="cardTemp" class="sensor-card temp-normal">
-              <i class="fas fa-thermometer-half fa-2x mb-2"></i>
-              <h6>Temperature</h6>
-              <h3 id="envTemp" class="fw-bold mb-0">-- °C</h3>
-              <small id="tempStatus">--</small>
-            </div>
-            <div id="cardHum" class="sensor-card hum-normal">
-              <i class="fas fa-tint fa-2x mb-2"></i>
-              <h6>Humidity</h6>
-              <h3 id="envHum" class="fw-bold mb-0">-- %</h3>
-              <small id="humStatus">--</small>
-            </div>
-            <div id="cardSoil" class="sensor-card soil-optimal">
-              <i class="fas fa-seedling fa-2x mb-2"></i>
-              <h6>Soil Moisture</h6>
-              <h3 id="envSoil" class="fw-bold mb-0">-- %</h3>
-              <small id="soilStatus">--</small>
-            </div>
-            <div id="cardPump" class="sensor-card pump-off">
-              <i class="fas fa-faucet fa-2x mb-2"></i>
-              <h6>Pump Status</h6>
-              <h3 id="pumpStatusText" class="fw-bold mb-0">OFF</h3>
-              <label class="switch mt-2" for="pumpToggle">
-                <input type="checkbox" id="pumpToggle" title="Toggle pump" />
-                <span class="slider"></span>
-              </label>
-            </div>
-          </div>
-        </div>
-      </div>
 
-      <div class="bento-card mb-4 mt-4 background-color-white">
-        <div class="row mt-4 g-3">
-          <div class="col-md-3">
-            <div class="p-3 rounded text-center">
-              <i class="fas fa-chart-line text-primary"></i>
-              <h6>Water Prediction</h6>
-              <p id="waterPrediction" class="mb-0 small fw-bold">--</p>
-            </div>
-          </div>
-          <div class="col-md-3">
-            <div class="p-3 rounded text-center">
-              <i class="fas fa-heartbeat text-success"></i>
-              <h6>System Health</h6>
-              <p id="systemHealth" class="mb-0 small fw-bold">--</p>
-            </div>
-          </div>
-          <div class="col-md-3">
-            <div class="p-3 rounded text-center">
-              <i class="fas fa-brain text-info"></i>
-              <h6>Smart Insight</h6>
-              <p id="smartInsight" class="mb-0 small">Analyzing...</p>
-            </div>
-          </div>
-          <div class="col-md-3">
-            <div class="p-3 rounded text-center">
-              <i class="fas fa-leaf text-warning"></i>
-              <h6>Plant Stress</h6>
-              <p id="plantStress" class="mb-0 small fw-bold">--</p>
-            </div>
-          </div>
-        </div>
-      </div>
+        <div class="insights-section">
 
-      <!-- Row 2: Alerts and Weather Side by Side -->
-      <div class="d-flex justify-content-between mt-4">
-        <div class="col-lg-6 col-md-12">
-          <div class="bento-card h-100 p-3">
-            <h5 class="bento-title mb-3">
-              <i class="fas fa-bell text-warning"></i> Active Alerts
-            </h5>
-            <div id="alertsContainer" class="alerts-container"></div>
-          </div>
-        </div>
-        <div class="col-lg-6 col-md-12">
-          <div class="weather-card h-100">
-            <div class="d-flex justify-content-between align-items-center mb-3">
-              <div>
-                <h5 class="mb-0">🌦 Smart Weather Intelligence</h5>
-                <p class="text-white-50 small mb-0">Real-time forecast</p>
-              </div>
-              <button
-                onclick="loadWeather()"
-                id="weatherRefreshBtn"
-                class="weather-refresh-btn"
-              >
-                <i class="fas fa-sync-alt"></i> Refresh
-              </button>
+            <div class="bento-card mb-4 mt-4 background-color-white">
+            <div class="insights-header">
+                <h3>System Insights</h3>
+                <p>Real-time analysis of your irrigation system</p>
             </div>
-            <div id="weatherMain"></div>
-            <div id="weatherForecast" class="forecast-horizontal mt-3"></div>
-          </div>
+
+                <div class="row mt-4 g-3">
+                    <div class="col-md-3">
+                        <div class="p-3  rounded text-center ">
+                            <i class="fas fa-chart-line text-primary"></i>
+                            <h6>Water Prediction</h6>
+                            <p id="waterPrediction" class="mb-0 small fw-bold">--</p>
+                        </div>
+                    </div>
+                    <div class="col-md-3">
+                        <div class="p-3 rounded text-center">
+                            <i class="fas fa-heartbeat text-success"></i>
+                            <h6>System Health</h6>
+                            <p id="systemHealth" class="mb-0 small fw-bold">--</p>
+                        </div>
+                    </div>
+                    <div class="col-md-3">
+                        <div class="p-3  rounded text-center">
+                            <i class="fas fa-brain text-info"></i>
+                            <h6>Smart Insight</h6>
+                            <p id="smartInsight" class="mb-0 small">Analyzing...</p>
+                        </div>
+                    </div>
+                    <div class="col-md-3">
+                        <div class="p-3  rounded text-center">
+                            <i class="fas fa-leaf text-warning"></i>
+                            <h6>Plant Stress</h6>
+                            <p id="plantStress" class="mb-0 small fw-bold">--</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
         </div>
-      </div>
+
+
+                <div class="weather-card ">
+                    <div class="d-flex justify-content-between align-items-center ">
+                        <div>
+                            <h5 class="mb-0">🌦 Smart Weather Intelligence</h5>
+                            <p class="text-white-50 small ">Real-time forecast</p>
+                        </div>
+                        <button onclick="loadWeather()" id="weatherRefreshBtn" class="weather-refresh-btn">
+                            <i class="fas fa-sync-alt"></i> Refresh
+                        </button>
+                    </div>
+                    <div id="weatherMain"></div>
+                    <div id="weatherForecast" class="forecast-horizontal "></div>
+                </div>
+            
+
+
+
+        <!-- Chatbot -->
+        <div id="chatIcon" onclick="toggleChat()">
+            <i class="fas fa-robot"></i>
+        </div>
+
+        <div id="chatWindow">
+            <div class="chat-header">HydroGen AI Assistant 🤖</div>
+            <div id="chatBox">
+                <div class="msg ai">
+                    <span><b>🤖 HydroGen AI:</b><br>👋 Hello! I'm your irrigation assistant. Ask me about soil moisture,
+                        watering schedules, or weather forecasts!</span>
+                </div>
+            </div>
+            <div class="suggestions">
+                <button onclick="quickAsk('Soil moisture level?')" style="color: #1f2937;">🌱 Soil Health</button>
+                <button onclick="quickAsk('Should I water?')" style="color: #1f2937;">🚰 Watering</button>
+                <button onclick="quickAsk('Water level?')" style="color: #1f2937;">💧 Tank Level</button>
+                <button onclick="quickAsk('Weather forecast?')" style="color: #1f2937;">🌤️ Weather</button>
+            </div>
+            <div class="chat-input">
+                <input id="userInput" placeholder="Ask me anything...">
+                <button onclick="sendMessage()">Send</button>
+            </div>
+        </div>
+
+        <audio id="alertSound" src="https://actions.google.com/sounds/v1/alarms/alarm_clock.ogg" preload="auto"></audio>
+
     </main>
 
-    <!-- Chatbot -->
-    <div id="chatIcon" onclick="toggleChat()">
-      <i class="fas fa-robot"></i>
-    </div>
+    <footer class="footer">
+      <div class="footer-grid">
 
-    <div id="chatWindow">
-      <div class="chat-header">HydroGen AI Assistant 🤖</div>
-      <div id="chatBox">
-        <div class="msg ai">
-          <span
-            ><b>🤖 HydroGen AI:</b><br />👋 Hello! I'm your irrigation
-            assistant. Ask me about soil moisture, watering schedules, or
-            weather forecasts!</span
-          >
+        <div>
+          <h3>HydroGen</h3>
+          <p>Smart irrigation platform powered by AI to save water and grow healthier crops.</p>
         </div>
-      </div>
-      <div class="suggestions">
-        <button
-          onclick="quickAsk('Soil moisture level?')"
-          class="quick-ask-btn"
-        >
-          🌱 Soil Health
-        </button>
-        <button onclick="quickAsk('Should I water?')" class="quick-ask-btn">
-          🚰 Watering
-        </button>
-        <button onclick="quickAsk('Water level?')" class="quick-ask-btn">
-          💧 Tank Level
-        </button>
-        <button onclick="quickAsk('Weather forecast?')" class="quick-ask-btn">
-          🌤️ Weather
-        </button>
-      </div>
-      <div class="chat-input">
-        <input id="userInput" placeholder="Ask me anything..." />
-        <button onclick="sendMessage()">Send</button>
-      </div>
-    </div>
 
-    <audio
-      id="alertSound"
-      src="https://actions.google.com/sounds/v1/alarms/alarm_clock.ogg"
-      preload="auto"
-    ></audio>
+        <div>
+          <h4>Platform</h4>
+          <a href="../dashboard/dashboard.html">Dashboard</a>
+          <a href="../irrigation/irrigation.html">Irrigation</a>
+          <a href="../analytics/analytics.html">Analytics</a>
+        </div>
 
-    <script src="../home/home.js"></script>
-    <script src="../theme/theme.js"></script>
-    <script src="https://www.gstatic.com/firebasejs/10.7.1/firebase-app-compat.js"></script>
-    <script src="https://www.gstatic.com/firebasejs/10.7.1/firebase-database-compat.js"></script>
-    <script src="../firebase/firebase-config.js"></script>
-    <script src="dashboard.js"></script>
-  </body>
+        <div>
+          <h4>Company</h4>
+          <a href="../about/about.html">About</a>
+          <a href="../services/services.html">Services</a>
+          <a href="../our story/our_story.html">Our Story</a>
+        </div>
+
+        <div>
+          <h4>Contact</h4>
+          <a href="https://wa.me/201005339569?text=Hello%20I%20want%20to%20ask%20about%20the%20app" target="_blank">
+            <img src="../assets/whatsapp.svg" alt="" style="width:20px;height:20px;"> Chat on WhatsApp
+          </a>
+          <a href="tel:+201005339569">
+            <img src="../assets/call.svg" alt="" style="width:20px;height:20px;"> Call
+          </a>
+          <a href="mailto:info@hydrogen.com">
+            <img src="../assets/email.svg" alt="" style="width:20px;height:20px;"> Send Email
+          </a>
+          <a href="https://maps.google.com/?q=Cairo,Egypt" target="_blank">
+            <img src="../assets/location.svg" alt="" style="width:20px;height:20px;"> Visit Us
+          </a>
+        </div>
+
+      </div>
+      <div class="footer-bottom">
+        © 2026 HydroGen — All rights reserved.
+      </div>
+    </footer>
+
+        
+        <script src="../theme/theme.js"></script>
+        <script src="https://www.gstatic.com/firebasejs/10.7.1/firebase-app-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/10.7.1/firebase-auth-compat.js"></script>
+        <script src="https://www.gstatic.com/firebasejs/10.7.1/firebase-database-compat.js"></script>
+        <script src="../firebase/firebase-config.js"></script>
+        <script src="dashboard.js"></script>
+</body>
+
 </html>

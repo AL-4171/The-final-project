@@ -1,6 +1,13 @@
 // ================= IRRIGATION.JS - COMPLETE FIXED VERSION =================
 // Fixed: Edit schedule updates schedule history, zone soil target works per zone, emergency stop works
 
+// ── Auth Guard ──
+(function () {
+  if (!localStorage.getItem("hydroUser")) {
+    window.location.replace("../landing/landing.html");
+  }
+})();
+
 const database = window.hydroGenDB;
 const currentUserId = "fcyeSoWkmqcfqgafPCQAN6vtV5M2";
 
@@ -617,212 +624,393 @@ database.ref('sensors').on('value', (snapshot) => {
     if (d.soil < 25) addAlert('critical', `Low soil moisture: ${d.soil}% - Watering needed!`);
 });
 
-// ===================== DOWNLOAD ZONE REPORT =====================
-window.downloadZoneReport = async function(zoneId) {
-    const zone = zones.find(z => z.id === zoneId);
-    if (!zone) {
-        addAlert('error', 'Zone not found');
-        return;
+// ===================== ULTIMATE CHATBOT (ORIGINAL - UNCHANGED) =====================
+async function loadAPIs() {
+    if (API_LOADED) return true;
+    try {
+        const snapshot = await database.ref('config').once('value');
+        const config = snapshot.val();
+        OPENROUTER_API_KEY = config?.openrouterKey || null;
+        GROQ_API_KEY = config?.groqKey || null;
+        if (OPENROUTER_API_KEY) console.log("✅ OpenRouter API loaded");
+        if (GROQ_API_KEY) console.log("✅ Groq API loaded");
+        API_LOADED = true;
+        return !!(OPENROUTER_API_KEY || GROQ_API_KEY);
+    } catch(e) { return false; }
+}
+
+function getCurrentTemp() { return currentSensorData.temp || 25; }
+function getCurrentHumidity() { return currentSensorData.hum || 60; }
+function getCurrentSoil() { return currentSensorData.soil || 50; }
+function getCurrentTankPercent() { return Math.round(waterCmToPercent(currentSensorData.water)); }
+function getCurrentTankLiters() { return waterCmToLiters(currentSensorData.water).toFixed(1); }
+function getPumpStatusText() { return currentPumpState ? 'ON' : 'OFF'; }
+function getAIMode() { return "MANUAL 👤"; }
+function isRainExpected() { return weatherRainExpected || false; }
+function isTankOverflowing() { return isTankOverflow(currentSensorData.water); }
+
+async function getRealZones() {
+    const now = Date.now();
+    if (cachedZones.length > 0 && (now - lastZoneFetch) < 5000) return cachedZones;
+    if (zones.length > 0) {
+        cachedZones = zones;
+        lastZoneFetch = now;
+        return cachedZones;
+    }
+    return [];
+}
+
+async function getRealWeatherData() {
+    const rainExpected = isRainExpected();
+    const temp = getCurrentTemp();
+    const humidity = getCurrentHumidity();
+    let weatherDescription = "";
+    let weatherIcon = "☀️";
+    if (rainExpected) { weatherDescription = "Rain expected"; weatherIcon = "🌧️"; }
+    else if (humidity > 70) { weatherDescription = "Humid and cloudy"; weatherIcon = "☁️"; }
+    else if (temp > 30) { weatherDescription = "Hot and sunny"; weatherIcon = "☀️"; }
+    else { weatherDescription = "Mild and clear"; weatherIcon = "🌤️"; }
+    return { rainExpected, temperature: temp, humidity, description: weatherDescription, icon: weatherIcon };
+}
+
+async function tryOpenRouterAPI(question) {
+    if (!OPENROUTER_API_KEY) return null;
+    const temp = getCurrentTemp();
+    const humidity = getCurrentHumidity();
+    const soil = getCurrentSoil();
+    const tank = getCurrentTankPercent();
+    const tankLiters = getCurrentTankLiters();
+    const pumpOn = getPumpStatusText();
+    const isOverflow = isTankOverflowing();
+    const rainExpected = isRainExpected();
+    const zonesList = await getRealZones();
+    
+    let zonesInfo = "";
+    if (zonesList.length > 0) {
+        zonesInfo = `\n🏞️ IRRIGATION ZONES (${zonesList.length} total):\n`;
+        zonesList.forEach((zone, i) => {
+            zonesInfo += `   ${i+1}. ${zone.name}: ${zone.isRunning ? '🟢 RUNNING' : '⚪ IDLE'} | ⏱️ ${zone.duration || 30}min | 💧 ${zone.waterPerCycle || 10}L\n`;
+        });
     }
     
+    const systemPrompt = `You are HydroGen AI 🌱, a professional agricultural expert and smart irrigation assistant.
+
+📊 CURRENT SYSTEM STATUS:
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+🌡️ Temperature: ${temp}°C
+💧 Humidity: ${humidity}%
+🌱 Soil Moisture: ${soil}%
+💦 Water Tank: ${tank}% (${tankLiters}L / 2L)
+🚰 Pump: ${pumpOn === 'ON' ? "🟢 ON" : "⚫ OFF"}
+🤖 AI Mode: ${getAIMode()}
+🌧️ Rain Expected: ${rainExpected ? "✅ Yes" : "❌ No"}
+⚠️ Overflow: ${isOverflow ? "🚨 YES - Use water!" : "✅ Normal"}${zonesInfo}
+
+🌐 WEBSITE PAGES (5 total):
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+📊 DASHBOARD - Real-time sensors, 3D tank, AI pump, charts, alerts
+💧 IRRIGATION - Zone management, schedules, emergency stop
+📈 ANALYTICS - Historical data, trends, PDF reports
+⚙️ SETTINGS - Theme, profile, notifications
+🏠 HOME - System overview, introduction
+
+🎯 RESPONSE GUIDELINES:
+- Use beautiful emojis and formatting
+- Be helpful, accurate, and professional
+- If soil < 35% → 🚨 recommend watering
+- If soil > 70% → ✅ advise holding off
+- If tank < 20% → ⚠️ warn about refilling
+- If overflowing → 🚨 urge to use water immediately
+
+Answer the user's question based on the data above. Be friendly and use plenty of emojis!`;
+
+    try {
+        const controller = new AbortController();
+        const timeoutId = setTimeout(() => controller.abort(), 10000);
+        const response = await fetch("https://openrouter.ai/api/v1/chat/completions", {
+            method: "POST",
+            headers: { "Authorization": `Bearer ${OPENROUTER_API_KEY}`, "Content-Type": "application/json" },
+            body: JSON.stringify({
+                model: "google/gemini-2.0-flash-lite-001",
+                messages: [{ role: "system", content: systemPrompt }, { role: "user", content: question }],
+                max_tokens: 600,
+                temperature: 0.7
+            }),
+            signal: controller.signal
+        });
+        clearTimeout(timeoutId);
+        if (response.ok) {
+            const data = await response.json();
+            const reply = data.choices?.[0]?.message?.content;
+            if (reply && reply.length > 10) return reply;
+        }
+        return null;
+    } catch(e) { return null; }
+}
+
+async function getLocalResponse(question) {
+    const q = question.toLowerCase();
+    const temp = getCurrentTemp();
+    const humidity = getCurrentHumidity();
+    const soil = getCurrentSoil();
+    const tank = getCurrentTankPercent();
+    const tankLiters = getCurrentTankLiters();
+    const pumpOn = getPumpStatusText();
+    const isOverflow = isTankOverflowing();
+    const rainExpected = isRainExpected();
+    const zonesList = await getRealZones();
+    const weatherData = await getRealWeatherData();
+    
+    if (q.includes('weather') || q.includes('forecast') || q.includes('rain')) {
+        const w = weatherData;
+        let rainAdvice = w.rainExpected ? "🌧️ **Rain expected!** Excellent for natural irrigation." : "☀️ **No rain expected.** Rely on irrigation system.";
+        return `## 🌤️ **Weather Forecast & Analysis**
+
+${w.icon} **Current Conditions:** ${w.description}
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+
+| 📊 Parameter | 📈 Value |
+|--------------|----------|
+| 🌡️ Temperature | ${w.temperature}°C |
+| 💧 Humidity | ${w.humidity}% |
+| 🌧️ Rain Expected | ${w.rainExpected ? '✅ YES' : '❌ NO'} |
+
+### 📋 **Smart Recommendations**
+${rainAdvice}
+💡 **Tip:** ${w.humidity > 60 ? 'High humidity - good for water collection!' : 'Monitor soil moisture closely.'}`;
+    }
+    
+    if (q.includes('zone') || q.includes('zones') || q.includes('how many zones')) {
+        if (zonesList.length === 0) return `## 🏞️ **Irrigation Zones**\n\n📭 **You have 0 zones configured.**\n\nClick **"Add New Zone"** to get started!`;
+        let zoneDetails = "";
+        zonesList.forEach((zone, idx) => {
+            zoneDetails += `\n**${idx + 1}. ${zone.icon || '🌱'} ${zone.name}** — ${zone.isRunning ? '🟢 RUNNING' : '⚪ IDLE'}\n`;
+            zoneDetails += `   ⏱️ Duration: ${zone.duration || 30} min | 💧 ${zone.waterPerCycle || 10}L | 🎯 Target: ${zone.soilTarget || 60}%\n`;
+            if (zone.description) zoneDetails += `   📝 Description: ${zone.description}\n`;
+        });
+        return `## 🏞️ **Your Irrigation Zones**\n\n**Total Zones:** ${zonesList.length}\n\n${zoneDetails}\n\n💡 **Tip:** Hover over any zone card to see its description! Click START to water manually or create schedules for automation.`;
+    }
+    
+    if (q.includes('how many pages') || q.includes('what pages') || q.includes('website pages')) {
+        return `## 🌐 **HydroGen Website Pages**\n\n**5 main pages:**\n\n| 🖥️ Page | 📋 Purpose |\n|----------|------------|\n| 📊 **Dashboard** | Real-time sensors, charts, alerts |\n| 💧 **Irrigation** | Zone management, schedules |\n| 📈 **Analytics** | Historical data, PDF reports |\n| ⚙️ **Settings** | Theme, profile, notifications |\n| 🏠 **Home** | System overview |\n\n💡 Use the sidebar menu (☰) to navigate!`;
+    }
+    
+    if (q.includes('should i water') || q.includes('water now') || q.includes('watering needed')) {
+        if (isOverflow) return `## 🚨 **URGENT: Tank Overflow!**\n\nStart irrigation IMMEDIATELY to use excess water!`;
+        if (tank < 10) return `## 🚫 **Cannot Water - Tank Empty**\n\nTank: ${tank}%. Activate water collection.`;
+        if (soil < 30) return `## 💧 **YES - Water NOW!**\n\nSoil: ${soil}% (CRITICAL) | Tank: ${tank}%\nDuration: 20-25 minutes`;
+        if (soil < 45) return `## 💧 **YES - Water Soon**\n\nSoil: ${soil}% (Low) | Duration: 15 minutes`;
+        if (soil > 75) return `## ✅ **NO - Hold Off**\n\nSoil: ${soil}% (Too wet)`;
+        return `## ✅ **NO - Soil Optimal**\n\nSoil: ${soil}% | Tank: ${tank}%`;
+    }
+    
+    if (q.includes('soil')) return `## 🌱 **Soil: ${soil}%**\n\n${soil < 35 ? '⚠️ DRY - Water needed' : (soil > 70 ? '⚠️ WET - Hold off' : '✅ OPTIMAL')}\nOptimal range: 50-70%`;
+    if (q.includes('tank')) return `## 💧 **Tank: ${tank}%**\n\n${tank < 20 ? '🔴 CRITICAL - Refill!' : (tank < 40 ? '🟠 LOW' : (tank > 95 ? '⚠️ Near full' : '🟡 OK'))}\nAvailable: ${tankLiters}L / 2L`;
+    if (q.includes('system status')) return `## 📊 **System Status**\n\n🌡️ ${temp}°C | 🌱 ${soil}% | 💦 ${tank}% | 📍 ${zonesList.length} zones | 🚰 Pump ${pumpOn}`;
+    if (q.includes('tomato')) return `## 🍅 **Tomato Guide**\n\nOptimal: 18-28°C, Soil 60-70%\nYour: ${temp}°C, ${soil}%\n${soil < 55 ? '⚠️ Water soon!' : '✅ Good'}\nTips: Prune suckers, stake support, water consistently.`;
+    if (q.includes('basil')) return `## 🌿 **Basil Guide**\n\nOptimal: 18-28°C, Soil 55-65%\nYour: ${temp}°C, ${soil}%\n${soil < 50 ? '⚠️ Water soon!' : '✅ Good'}\nTips: Pinch flowers, harvest from top.`;
+    
+    return `## 🤖 **HydroGen AI** 🌱\n\n👋 Hello! I'm your agricultural assistant!\n\n### 📊 **Current Status**\n🌡️ ${temp}°C | 🌱 ${soil}% | 💦 ${tank}% | 📍 ${zonesList.length} zones\n\n### 💡 **Try:**\n• "Should I water?" 💧\n• "How many zones?" 🏞️\n• "Weather forecast?" 🌤️\n• "Tomato guide" 🍅\n• "Website pages" 🌐\n\n**Ask me anything!** 🔥`;
+}
+
+async function sendChatMessage() {
+    const input = document.getElementById('userInput');
+    const msg = input.value.trim();
+    if (!msg) return;
+    addChatMessage('You', msg);
+    input.value = '';
+    addChatMessage('AI', '💭 Thinking...', 'typing');
+    await loadAPIs();
+    let response = null;
+    if (OPENROUTER_API_KEY) response = await tryOpenRouterAPI(msg);
+    if (!response && GROQ_API_KEY) response = await tryOpenRouterAPI(msg);
+    if (!response) response = await getLocalResponse(msg);
+    document.querySelectorAll(".typing").forEach(e => e.remove());
+    addChatMessage('AI', response);
+}
+
+function addChatMessage(sender, text, type = '') {
+    const box = document.getElementById('chatBox');
+    if (!box) return;
+    const div = document.createElement('div');
+    div.className = `msg ${sender.toLowerCase()} ${type}`;
+    let formatted = text.replace(/## (.*?)\n/g, '<strong style="color:#10b981;display:block;margin:10px 0 5px 0;">$1</strong>').replace(/\n/g, '<br>');
+    div.innerHTML = `<span><b>${sender === 'AI' ? '🤖 HydroGen AI' : '👤 You'}:</b><br>${formatted}</span>`;
+    box.appendChild(div);
+    box.scrollTop = box.scrollHeight;
+}
+
+window.sendChatMessage = sendChatMessage;
+window.quickAsk = (q) => { document.getElementById('userInput').value = q; sendChatMessage(); };
+window.toggleChat = () => { const w = document.getElementById('chatWindow'); if (w) w.style.display = w.style.display === 'flex' ? 'none' : 'flex'; };
+
+// ===================== PROFESSIONAL ZONE REPORT (CLEAN ENCODING - NO SPECIAL CHARACTER ERRORS) =====================
+window.downloadZoneReport = async function(zoneId) {
+    const zone = typeof zones !== "undefined" ? zones.find(z => z.id === zoneId) : null;
+    if (!zone) { 
+        if (typeof addAlert === 'function') addAlert('error', 'Zone not found'); 
+        return; 
+    }
     try {
         const { jsPDF } = window.jspdf;
         const doc = new jsPDF();
-        let y = 25;
         
-        const primaryGreen = [16, 185, 129];
-        const dark = [31, 41, 55];
-        const lightGray = [249, 250, 251];
+        doc.setFont('helvetica', 'normal');
         
-        // Header
-        doc.setFillColor(...primaryGreen);
+        const now = new Date();
+        const reportDateTime = now.toLocaleString('en-GB', {
+            day: '2-digit',
+            month: '2-digit',
+            year: 'numeric',
+            hour: '2-digit',
+            minute: '2-digit',
+            second: '2-digit'
+        });
+        
+        const cleanZoneName = String(zone.name || 'Zone').replace(/[^\w\s]/g, '');
+        const zoneTypeName = (zone.icon || "Zone").replace(/[^\w\s]/g, '');
+        const cleanDescription = (zone.description || "No description provided").replace(/[^\w\s.,!?-]/g, '');
+        
+        doc.setFillColor(16, 185, 129);
         doc.rect(0, 0, 210, 45, "F");
         doc.setTextColor(255, 255, 255);
         doc.setFontSize(20);
-        doc.text("HydroGen", 20, 18);
+        doc.text("HydroGen", 20, 25);
         doc.setFontSize(12);
-        doc.text("Zone Report", 20, 28);
-        doc.setFontSize(8);
-        doc.text(`Generated: ${new Date().toLocaleString()}`, 140, 12);
-        doc.text(`${zone.name.toUpperCase()} ZONE`, 140, 22);
+        doc.text("Professional Zone Report", 20, 38);
         
-        y = 55;
-        doc.setFontSize(24);
-        doc.setTextColor(...primaryGreen);
-        doc.text(zone.name, 20, y);
-        y += 12;
+        doc.setFontSize(9);
+        doc.text(`Exported: ${reportDateTime}`, 140, 20);
         
-        if (zone.description) {
-            doc.setFontSize(9);
-            doc.setTextColor(100, 100, 100);
-            doc.text(zone.description, 20, y);
-            y += 10;
-        }
+        doc.setTextColor(0, 0, 0);
+        doc.setFontSize(18);
+        doc.text(`${cleanZoneName}`, 20, 70);
         
-        y += 5;
+        doc.setFontSize(11);
+        let y = 90;
         
-        const stats = [
+        const details = [
+            { label: "Zone Type", value: zoneTypeName },
             { label: "Duration", value: `${zone.duration || 30} minutes` },
             { label: "Water per Cycle", value: `${zone.waterPerCycle || 10} liters` },
-            { label: "Priority", value: zone.priority == 1 ? "High" : zone.priority == 2 ? "Medium" : "Low" },
+            { label: "Priority", value: zone.priority == 1 ? "High" : (zone.priority == 2 ? "Medium" : "Low") },
             { label: "Soil Target", value: `${zone.soilTarget || 60}%` },
-            { label: "Schedule Time", value: zone.time || 'Manual' },
-            { label: "Total Cycles", value: `${zone.cycles || 0} cycles` },
-            { label: "Total Water Used", value: `${(zone.totalWaterUsed || 0).toFixed(1)} Liters` },
-            { label: "Current Soil Moisture", value: `${currentSensorData.soil}%` },
-            { label: "Current Temperature", value: `${currentSensorData.temp}°C` },
-            { label: "Current Humidity", value: `${currentSensorData.hum}%` }
+            { label: "Current Soil", value: `${typeof currentSensorData !== "undefined" ? currentSensorData.soil : 0}%` },
+            { label: "Temperature", value: `${typeof currentSensorData !== "undefined" ? currentSensorData.temp : 0}°C` },
+            { label: "Humidity", value: `${typeof currentSensorData !== "undefined" ? currentSensorData.hum : 0}%` },
+            { label: "Watered Status", value: zone.lastWatered ? new Date(zone.lastWatered).toLocaleString() : "Not watered yet" },
+            { label: "Start Date", value: zone.startDate || "Not set" },
+            { label: "End Date", value: zone.endDate || "Not set" },
+            { label: "Schedule Time", value: zone.time || "Manual" },
+            { label: "Description", value: cleanDescription }
         ];
         
-        stats.forEach((stat, i) => {
-            if (i % 2 === 0) {
-                doc.setFillColor(...lightGray);
-                doc.rect(20, y, 170, 7, "F");
+        details.forEach(detail => {
+            const labelText = detail.label;
+            const valueText = String(detail.value).substring(0, 60);
+            doc.text(`${labelText}: ${valueText}`, 20, y);
+            y += 9;
+            if (y > 270) {
+                doc.addPage();
+                y = 20;
             }
-            doc.setTextColor(...dark);
-            doc.text(stat.label, 22, y + 5);
-            doc.setTextColor(...primaryGreen);
-            doc.text(stat.value, 150, y + 5);
-            y += 8;
         });
         
-        doc.setFillColor(...primaryGreen);
+        doc.setFillColor(16, 185, 129);
         doc.rect(0, 285, 210, 12, "F");
         doc.setTextColor(255, 255, 255);
-        doc.setFontSize(8);
+        doc.setFontSize(9);
         doc.text("HydroGen AI System 2026", 20, 292);
-        doc.text("Smart Irrigation • Data Driven • Sustainable", 105, 292);
+        doc.text("Smart Water-from-Air Irrigation", 105, 292);
         
-        doc.save(`HydroGen_Zone_${zone.name}_Report.pdf`);
-        addAlert('success', `Zone report for "${zone.name}" downloaded`);
-        await saveActivityLog(`Downloaded report for zone: ${zone.name}`, 'report');
+        const safeFileName = `HydroGen_Zone_${cleanZoneName.replace(/[^a-zA-Z0-9]/g, '_')}_Report.pdf`;
+        doc.save(safeFileName);
         
-    } catch (error) {
-        console.error('Error generating PDF:', error);
-        addAlert('error', `Failed to generate report: ${error.message}`);
+        if (typeof addAlert === 'function') addAlert('success', `Professional report for "${zone.name}" downloaded!`);
+        if (typeof saveActivityLog === 'function') await saveActivityLog(`Downloaded report for zone: ${zone.name}`, 'report');
+    } catch(e) { 
+        console.error("PDF Error:", e);
+        if (typeof addAlert === 'function') addAlert('error', 'Failed to generate report'); 
     }
 };
 
 // ===================== CLEAR LOGS =====================
 window.clearLogs = async function() {
-    if (confirm('Clear all activity logs?')) {
-        await database.ref(`users_w/${currentUserId}/activityLog`).remove();
-        await loadActivityLog();
-        addAlert('success', 'Activity logs cleared');
+    if (confirm('Clear all logs?')) { 
+        if (typeof database !== 'undefined') await database.ref(`shared_data/activityLog`).remove(); 
+        if (typeof loadActivityLog === 'function') await loadActivityLog(); 
+        if (typeof addAlert === 'function') addAlert('success', 'Logs cleared'); 
     }
 };
 
 // ===================== MODAL CONTROLS =====================
-window.showAddZoneModal = () => document.getElementById('addZoneModal').classList.remove('hidden');
+window.showAddZoneModal = () => {
+    document.getElementById('zoneStartDate').value = new Date().toISOString().split('T')[0];
+    document.getElementById('zoneEndDate').value = '';
+    document.getElementById('addZoneModal').classList.remove('hidden');
+};
 window.closeAddZoneModal = () => document.getElementById('addZoneModal').classList.add('hidden');
-window.showAddScheduleModal = () => { updateScheduleSelect(); document.getElementById('addScheduleModal').classList.remove('hidden'); };
+window.showAddScheduleModal = () => {
+    if (typeof updateScheduleSelects === 'function') updateScheduleSelects();
+    document.getElementById('scheduleStartDate').value = new Date().toISOString().split('T')[0];
+    document.getElementById('addScheduleModal').classList.remove('hidden');
+};
 window.closeAddScheduleModal = () => document.getElementById('addScheduleModal').classList.add('hidden');
 window.closeEditZoneModal = () => document.getElementById('editZoneModal').classList.add('hidden');
 window.closeEditScheduleModal = () => document.getElementById('editScheduleModal').classList.add('hidden');
 
-function updateScheduleSelect() {
+function updateScheduleSelects() {
+    if (typeof zones === 'undefined') return;
     const select = document.getElementById('scheduleZone');
-    if (select) {
-        select.innerHTML = '<option value="">Choose a zone...</option>' + zones.map(zone => `<option value="${zone.id}">${zone.icon} ${escapeHtml(zone.name)}</option>`).join('');
-    }
+    if (select) select.innerHTML = '<option value="">Choose zone...</option>' + zones.map(z => `<option value="${z.id}">${z.icon} ${escapeHtml(z.name)}</option>`).join('');
+    const editSelect = document.getElementById('editScheduleZone');
+    if (editSelect) editSelect.innerHTML = '<option value="">Choose zone...</option>' + zones.map(z => `<option value="${z.id}">${z.icon} ${escapeHtml(z.name)}</option>`).join('');
 }
 
-function updateEditScheduleSelect() {
-    const select = document.getElementById('editScheduleZone');
-    if (select) {
-        select.innerHTML = '<option value="">Choose a zone...</option>' + zones.map(zone => `<option value="${zone.id}">${zone.icon} ${escapeHtml(zone.name)}</option>`).join('');
-    }
-}
-
-// Day selector styling
-document.querySelectorAll('.day-selector').forEach(selector => {
-    const checkbox = selector.querySelector('input');
-    if (checkbox) {
-        checkbox.addEventListener('change', () => {
-            if (checkbox.checked) selector.classList.add('active');
-            else selector.classList.remove('active');
-        });
-    }
+document.querySelectorAll('.day-selector').forEach(sel => {
+    const cb = sel.querySelector('input');
+    if (cb) cb.addEventListener('change', () => { if (cb.checked) sel.classList.add('active'); else sel.classList.remove('active'); });
 });
 
-// Soil target slider
-document.getElementById('zoneSoilTarget')?.addEventListener('input', (e) => document.getElementById('soilTargetValue').innerText = `${e.target.value}%`);
-document.getElementById('editZoneSoilTarget')?.addEventListener('input', (e) => document.getElementById('editSoilTargetValue').innerText = `${e.target.value}%`);
+document.getElementById('zoneSoilTarget')?.addEventListener('input', (e) => { const el = document.getElementById('soilTargetValue'); if (el) el.innerText = `${e.target.value}%`; });
+document.getElementById('editZoneSoilTarget')?.addEventListener('input', (e) => { const el = document.getElementById('editSoilTargetValue'); if (el) el.innerText = `${e.target.value}%`; });
 
-// ===================== AI CHATBOT =====================
-function initAIChat() {
-    if (chatInitialized) return;
-    chatInitialized = true;
-    setTimeout(() => {
-        addChatMessage("AI", "👋 Hello! I'm HydroGen AI Assistant. I can see your current sensor readings and help you optimize your irrigation. Ask me anything!", "ai");
-    }, 1000);
-}
+document.getElementById('darkModeToggle')?.addEventListener('click', () => document.body.classList.toggle('dark'));
 
-const AI_API = "https://openrouter.ai/api/v1/chat/completions";
-const AI_KEY = "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";
+document.getElementById('menuBtn')?.addEventListener('click', () => { 
+    const sm = document.getElementById('sideMenu'); if (sm) sm.classList.add('open'); 
+    const mo = document.getElementById('menuOverlay'); if (mo) mo.classList.add('active'); 
+});
+document.getElementById('closeBtn')?.addEventListener('click', () => { 
+    const sm = document.getElementById('sideMenu'); if (sm) sm.classList.remove('open'); 
+    const mo = document.getElementById('menuOverlay'); if (mo) mo.classList.remove('active'); 
+});
+document.getElementById('menuOverlay')?.addEventListener('click', () => { 
+    const sm = document.getElementById('sideMenu'); if (sm) sm.classList.remove('open'); 
+    const mo = document.getElementById('menuOverlay'); if (mo) mo.classList.remove('active'); 
+});
 
-async function sendMessage() {
-    const userInput = document.getElementById("userInput");
-    const msg = userInput.value.trim();
-    if (!msg) return;
-    addChatMessage("You", msg);
-    userInput.value = "";
-    addChatMessage("AI", "Typing...", "typing");
-    try {
-        const res = await fetch(AI_API, {
-            method: "POST",
-            headers: { "Authorization": `Bearer ${AI_KEY}`, "Content-Type": "application/json" },
-            body: JSON.stringify({
-                model: "openai/gpt-3.5-turbo",
-                messages: [{ role: "system", content: getSystemContext() }, { role: "user", content: msg }]
-            })
-        });
-        const data = await res.json();
-        removeTyping();
-        addChatMessage("AI", data.choices?.[0]?.message?.content || "AI error");
-    } catch(e) {
-        removeTyping();
-        addChatMessage("AI", "❌ AI connection failed");
-    }
-}
-
-function getSystemContext() {
-    return `You are HydroGen AI assistant. Current readings: Temp: ${currentSensorData.temp}°C, Humidity: ${currentSensorData.hum}%, Soil: ${currentSensorData.soil}%, Pump: ${currentPumpState ? 'ON' : 'OFF'}. Total zones: ${zones.length}. Provide short, helpful advice.`;
-}
-
-function addChatMessage(sender, text, type = "normal") {
-    const chatBox = document.getElementById("chatBox");
-    if (!chatBox) return;
-    if (type !== "typing") removeTyping();
-    const div = document.createElement("div");
-    div.className = `msg ${sender.toLowerCase()} ${type}`;
-    div.innerHTML = `<span><b>${sender === 'AI' ? '🤖 HydroGen AI' : '👤 You'}:</b><br>${text.replace(/\n/g, '<br>')}</span>`;
-    chatBox.appendChild(div);
-    chatBox.scrollTop = chatBox.scrollHeight;
-}
-
-function removeTyping() { document.querySelectorAll(".typing").forEach(e => e.remove()); }
-
-window.quickAsk = function(q) { document.getElementById("userInput").value = q; sendMessage(); };
-window.toggleChat = function() {
-    const w = document.getElementById("chatWindow");
-    if (w) w.style.display = w.style.display === "flex" ? "none" : "flex";
-};
-
-// ===================== INITIALIZE =====================
-async function init() {
-    console.log("Initializing irrigation page...");
-    console.log("Using user ID:", currentUserId);
-    await loadZones();
-    await loadSchedules();
-    await loadActivityLog();
-    initAIChat();
-    
-    setTimeout(() => {
-        if (document.getElementById('alertsList').children.length === 0) {
-            document.getElementById('alertsList').innerHTML = '<div class="text-center py-4 text-gray-400">No active alerts</div>';
+function populateZoneTypeOptions() {
+    const selectElements = document.querySelectorAll('#zoneIcon, #editZoneIcon');
+    selectElements.forEach(select => {
+        if (select && select.options.length <= 1 && typeof getZoneTypeOptions === 'function') {
+            select.innerHTML = getZoneTypeOptions();
         }
-    }, 1000);
+    });
 }
 
+async function init() {
+    console.log("Initializing page...");
+    if (typeof populateZoneTypeOptions === 'function') populateZoneTypeOptions();
+    if (typeof loadZones === 'function') await loadZones();
+    if (typeof loadSchedules === 'function') await loadSchedules();
+    if (typeof loadActivityLog === 'function') await loadActivityLog();
+    if (typeof loadWeather === 'function') loadWeather();
+    if (typeof loadWeather === 'function') setInterval(loadWeather, 300000);
+    setTimeout(() => {
+        if (typeof addChatMessage === 'function') {
+            addChatMessage('AI', `## 🤖 **HydroGen AI Assistant** 🌱\n\n👋 Hello! I'm your intelligent agricultural assistant!\n\n━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━\n\n### 📊 **Current System Status**\n\n| 📊 Parameter | 📈 Value |\n|--------------|----------|\n| 🌡️ Temperature | ${getCurrentTemp()}°C |\n| 💧 Humidity | ${getCurrentHumidity()}% |\n| 🌱 Soil | ${getCurrentSoil()}% |\n| 💦 Tank | ${getCurrentTankPercent()}% (${getCurrentTankLiters()}L) |\n| 🚰 Pump | ${getPumpStatusText()} |\n| 🤖 AI Mode | ${getAIMode()} |\n| 📍 Zones | ${typeof zones !== 'undefined' ? zones.length : 0} |\n| 🌤️ Weather | ${isRainExpected() ? 'Rain Expected' : 'Clear'} |\n\n━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━\n\n### 💡 **Try These Questions**\n\n• 🌤️ *"Weather forecast?"* - Get detailed weather analysis\n• 🏞️ *"How many zones?"* - Check your irrigation zones\n• 💧 *"Should I water?"* - Get watering advice\n• 🌐 *"How many pages?"* - Learn about all website pages\n• 📊 *"System status"* - Complete system overview\n• 🍅 *"How to grow tomatoes?"* - Plant care guide\n\n💡 **Tip:** Hover over any zone card to see its description!\n\n━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━\n\n💡 **Ask me anything about your HydroGen system!** 🔥`);
+        }
+    }, 1500);
+}
 init();

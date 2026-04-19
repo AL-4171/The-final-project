@@ -24,3 +24,6 @@ if (!firebase.apps.length) {
 
 // Make the database instance globally available to all scripts
 window.hydroGenDB = firebase.database();
+
+// Expose default config for settings page
+window.defaultFirebaseConfig = defaultFirebaseConfig;

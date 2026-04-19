@@ -1,4 +1,4 @@
-<!doctype html>
+  <!doctype html>
 <html lang="en">
 
 <head>
@@ -8,13 +8,9 @@
   <link rel="stylesheet" href="../theme/theme.css" />
   <link rel="stylesheet" href="../bootstrap-custom.css" />
   <link rel="stylesheet" href="../theme/design-system.css" />
-  <link rel="stylesheet" href="../home/Home.css" />
-  <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
-  <link rel="stylesheet" href="about.css" />
+  <link rel="stylesheet" href="services.css" />
 </head>
-
 <body>
-
   <header class="header">
     <nav class="main-nav">
       <div class="nav-left">
@@ -63,152 +59,114 @@
         
         <button class="drop-item danger" id="logoutBtn"><img src="../assets/logout.svg" alt="" class="icon">Log
           out</button>
+            <div class="theme-section">
+      <button class="theme-row" id="appearanceBtn">
+        🌙 Appearance ›
+      </button>
 
+      <div class="theme-submenu" id="themeMenu">
+        <button data-theme="system">Use device theme</button>
+        <button data-theme="dark">Dark theme</button>
+        <button data-theme="light">Light theme</button>
+      </div>
+
+    </div>
       </div>
       </div>
     </div>
   </header>
+    <div class="menu-overlay" id="menuOverlay"></div>
 
-<section class="about-hero">
+    <!-- SIDEBAR -->
+    <div class="side-menu" id="sideMenu">
+        <button class="close-btn" id="closeBtn">✕</button>
+        <a href="../home/Home.html" class="menu-item"> <img src="../assets/Home.svg" class="icon">Home</a>
+        <a href="../dashboard/dashboard.html" class="menu-item active"><img src="../assets/Vector 48 (Stroke).svg"
+                class="icon">Dashboard</a>
+        <a href="../irrigation/irrigation.html" class="menu-item"><img src="../assets/water-drop 5.svg"
+                class="icon">Irrigation</a>
+        <a href="../analytics/analytics.html" class="menu-item"><img src="../assets/Trending-up.svg"
+                class="icon">Analytics</a>
+        <a href="../settings/settings.html" class="menu-item"><img src="../assets/settings-01.svg"
+                class="icon">Settings</a>
+    </div>
 
-  <h1>
-    HydroGen is redefining smart irrigation.
-  </h1>
 
-  <p>
-    We build intelligent water systems that merge AI,
-    sustainability, and precision agriculture.
-    Our mission is to help farms grow more
-    using less water.
-  </p>
-
-</section>
-
-
-<section class="about-features reveal">
-
-  <div class="about-card">
-    <div class="icon-circle">💧</div>
-    <h3>Efficient</h3>
+<section class="features-intro reveal">
+    <h2>Our Offered Services</h2>
     <p>
-      AI-driven irrigation reduces water waste while maximizing
-      crop performance.
+      We are dedicated to bringing you smart and sustainable irrigation
+      solutions powered by AI — built
+      for efficiency and healthier crops.
     </p>
-  </div>
+  </section>
 
-  <div class="about-card">
-    <div class="icon-circle">🌍</div>
-    <h3>Connected</h3>
-    <p>
-      Monitor and control your irrigation systems from anywhere,
-      in real time.
-    </p>
-  </div>
+  <section class="features reveal">
 
-  <div class="about-card">
-    <div class="icon-circle">🌱</div>
-    <h3>Sustainable</h3>
-    <p>
-      Eco-friendly water management designed for long-term
-      environmental balance.
-    </p>
-  </div>
+    <div class="feature-card">
+      <div class="card-inner">
+        <div class="card-front">
+          <img src="../assets/extract water.svg" alt="">
+          <h3>Extract Water from Air</h3>
+          <p>
+            Advanced technology to convert atmospheric humidity into pure water
+            for agricultural use.
+          </p>
+        </div>
+        <div class="card-back">
+          <h3>Extract Water from Air</h3>
+          <p>
+            Our atmospheric water generation technology captures humidity
+            and transforms it into purified water suitable for irrigation.
+            This system ensures farms in dry regions maintain sustainable
+            water supply without relying on groundwater depletion.
+          </p>
+        </div>
+      </div>
+    </div>
+    <div class="feature-card">
+      <div class="card-inner">
+        <div class="card-front">
+          <img src="../assets/clean.svg" alt="">
+          <h3>Clean & Sustainable Water</h3>
+          <p>
+            Ecofriendly system providing renewable water source without
+            depleting natural resources.
+          </p>
+        </div>
+        <div class="card-back">
+          <h3>Clean & Sustainable Water</h3>
+          <p>
+            HydroGen provides eco-friendly water solutions powered by
+            renewable energy. The system reduces environmental impact
+            while delivering consistent water quality for crops.
+          </p>
+        </div>
+      </div>
+    </div>
+    <div class="feature-card">
+      <div class="card-inner">
+        <div class="card-front">
+          <img src="../assets/smart&efficient irrigation.svg" alt="">
+          <h3>Smart & Efficient Irrigation</h3>
+          <p>
+            Automated irrigation control for efficient water distribution and
+            optimal agricultural results.
+          </p>
+        </div>
+        <div class="card-back">
+          <h3>Smart & Efficient Irrigation</h3>
+          <p>
+            AI automation analyzes soil moisture and weather conditions
+            to optimize irrigation schedules. This increases crop yield
+            while minimizing water waste and operational costs.
+          </p>
+        </div>
+      </div>
+    </div>
+  </section>
 
-</section>
-
-<section class="team-section reveal">
-
-<h2>Our Team</h2>
-
-<div class="team-grid reveal">
-
-
-   <div class="three reveal">
-  <div class="member">
-    <img src="../assets/yousef.jpeg">
-    <h4>Youssef Mohamed El-Gebaly</h4>
-    <p>Hardware Specialist</p>
-  </div>
-
-  <div class="member">
-    <img src="../assets/Menna.jpeg">
-    <h4>Menna Magdi Mohammed</h4>
-    <p>Frontend Developer</p>
-  </div>
-
-  <div class="member">
-    <img src="../assets/Hoda.jpeg">
-    <h4>Hoda Yasser Mohamed</h4>
-    <p>UI/UX Designer</p>
-</div>
-   </div>
-
-   <div class="three reveal">
-  <div class="member">
-    <img src="../assets/mohamed.jpeg">
-    <h4>Mohamed Walid Yassen </h4>
-    <p>Frontend Developer</p>
-  </div>
-
-  <div class="member">
-    <img src="../assets/ganna.jpeg">
-    <h4>Ganna Nasr El-sabe</h4>
-    <p>Backend Developer</p>
-  </div>
-
-    <div class="member">
-    <img src="team8.jpg">
-    <h4>Nada Mostafa Kamel</h4>
-    <p>Mobile App Developer</p>
-  </div>
-
-</div>
-
-      <div class="three reveal">
-
-  <div class="member">
-    <img src="../assets/Esraa.jpeg">
-    <h4>Esraa Alaa Mohamed</h4>
-    <p>Frontend Developer</p>
-  </div>
-    <div class="member">
-    <img src="team10.jpg">
-    <h4>Menna Hussin Mohamed</h4>
-    <p>Product Manager</p>
-  </div>
-
-  <div class="member">
-    <img src="team5.jpg">
-    <h4>Kaber Abdelhameed Shawqi</h4>
-    <p>Backend Developer</p>
-  </div>
-
-</div>
-
-   <div class="three reveal">
-  <div class="member">
-    <img src="../assets/mahmoud.jpeg">
-    <h4>Mahmoud elsaid elsaid</h4>
-    <p>Research Lead</p>
-  </div>
-  <div class="member">
-    <img src="../assets/mohamed ahmed.jpeg">
-    <h4>Mohamed Ahmed Abdelwahhab</h4>
-    <p>data collector</p>
-  </div>
-
-  <div class="member">
-    <img src="../assets/adham.jpeg">
-    <h4>Adham Adel Elsharkawy</h4>
-    <p>Hardware Specialist</p>
-  </div>
-
-</div>
-</div>
-
-</section>
-
-<footer class="footer">
+    <footer class="footer">
     <div class="footer-grid">
 
       <div>
@@ -226,9 +184,8 @@
       <div>
         <h4>Company</h4>
         <a href="../about/about.html">About</a>
-        <a href="../services/services.html">Services</a>
+            <a href="../services/services.html">Services</a>
         <a href="../our story/our_story.html">our story</a>
-
       </div>
 
       <div>
@@ -258,12 +215,14 @@
     </div>
   </footer>
 
+
   <script src="https://www.gstatic.com/firebasejs/10.7.1/firebase-app-compat.js"></script>
   <script src="https://www.gstatic.com/firebasejs/10.7.1/firebase-auth-compat.js"></script>
   <script src="https://www.gstatic.com/firebasejs/10.7.1/firebase-database-compat.js"></script>
   <script src="../firebase/firebase-config.js"></script>
-  <script src="../about/about.js"></script>
+  <script src="services.js"></script>
   <script src="../theme/theme.js"></script>
+
 <script>
     (function(){if(!localStorage.getItem("hydroUser"))window.location.replace("../landing/landing.html");})();
   </script>

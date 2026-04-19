@@ -1,3 +1,51 @@
+
+
+
+/* nav right */
+.nav-right {
+    display: flex;
+    align-items: center;
+    gap: 15px;
+}
+
+/* notification */
+.notification-wrapper {
+    position: relative;
+}
+
+.notification-icon {
+    font-size: 18px;
+    color: #facc15;
+    cursor: pointer;
+}
+
+/* badge */
+.notif-badge {
+    position: absolute;
+    top: -5px;
+    right: -8px;
+    background: #ef4444;
+    color: white;
+    font-size: 10px;
+    padding: 2px 6px;
+    border-radius: 50px;
+    display: none;
+}
+
+/* dropdown */
+.notification-dropdown {
+    position: absolute;
+    top: 35px;
+    right: 0;
+    width: 300px;
+    display: none;
+    z-index: 9999;
+}
+
+.notification-wrapper.active .notification-dropdown {
+    display: block;
+}
+
 /* settings.css */
 
 .settings-container {

@@ -3,9 +3,9 @@
 
 <head>
   <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>Smart Irrigation</title>
   <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet" />
+  <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
   <link rel="stylesheet" href="../theme/theme.css" />
   <link rel="stylesheet" href="../bootstrap-custom.css" />
   <link rel="stylesheet" href="../theme/design-system.css" />
@@ -24,34 +24,41 @@
   </div>
 
   <header class="header">
-    <div class="left_header">
-
-      <button class="menu-btn" id="menuBtn" aria-label="Open menu">☰</button>
-    </div>
-    <a href="../home/Home.html" class="logo">
-      <img src="../assets/water-drop-rain-drink 1.svg" alt="" class="icon">
-      <span class="brand">HydroGen</span> — Intelligent Water Systems
-    </a>
-
-
-    <nav class="nav">
-      <a href="../dashboard/dashboard.html">Dashboard</a>
-      <a href="../irrigation/irrigation.html">Irrigation</a>
-      <a href="../analytics/analytics.html">Analytics</a>
-      <a href="../settings/settings.html">Settings</a>
+    <nav class="main-nav">
+      <div class="nav-left">
+        <button class="menu-btn" id="menuBtn" aria-label="Open menu">☰</button>
+        <a href="../home/Home.html" class="logo">
+          <img src="../assets/water-drop-rain-drink 1.svg" alt="HydroGen Logo" class="icon">
+          <span class="logo">HydroGen</span>
+          <span class="divider"></span>
+        </a>
+        <div class="nav-links">
+          <a href="../dashboard/dashboard.html">Dashboard</a>
+          <a href="../irrigation/irrigation.html">Irrigation</a>
+          <a href="../analytics/analytics.html">Analytics</a>
+          <a href="../settings/settings.html">Settings</a>
+        </div>
+      </div>
     </nav>
 
-
-    <div class="profile-menu">
-
-      <button class="profile-btn" id="profileBtn">
-        <img src="../assets/Vector.svg" alt="profile">
-      </button>
-
-      <div class="profile-dropdown" id="profileDropdown">
-
-        <div class="profile-header">
-          <div class="avatar">U</div>
+    <div class="nav-right">
+      <div class="notification-wrapper">
+        <i class="fas fa-bell notification-icon" id="notifToggle"></i>
+        <span class="notif-badge" id="notifBadge"></span>
+        <div class="notification-dropdown">
+          <div class="bento-card">
+            <h6>Active Alerts</h6>
+            <div id="alertsContainer"></div>
+          </div>
+        </div>
+      </div>
+      <div class="profile-menu">
+        <button class="profile-btn" id="profileBtn">
+          <img src="../assets/Vector.svg" id="profileImage" alt="profile">
+        </button>
+        <div class="profile-dropdown" id="profileDropdown">
+          <div class="profile-header">
+    <div class="avatar">U</div>
           <div class="user-info">
             <strong id="username">User Name</strong>
             <p id="email">email@example.com</p>
@@ -61,43 +68,11 @@
         <hr>
 
         <button class="drop-item"><img src="../assets/switch.svg" alt="" class="icon">Switch account</button>
-        <div class="drop-group">
+        
 
-          <button class="drop-item toggle-lang">
-            <img src="../assets/language_icon_151284.svg" alt="" class="icon">
-            Display language ›
-          </button>
-
-          <div class="drop-submenu lang-menu">
-            <button>English</button>
-            <button>Arabic</button>
-          </div>
-
-        </div>
         <button class="drop-item danger" id="logoutBtn"><img src="../assets/logout.svg" alt="" class="icon">Log
           out</button>
-
-      </div>
-
-    </div>
-
-  </header>
-
-
-  <div class="menu-overlay" id="menuOverlay"></div>
-
-  <div class="side-menu" id="sideMenu">
-    <button class="close-btn" id="closeBtn">✕</button>
-    <a href="../home/Home.html" class="menu-item active"> <img src="../assets/Home.svg" class="icon" alt="Home" />Home</a>
-    <a href="../dashboard/dashboard.html" class="menu-item"><img src="../assets/Vector 48 (Stroke).svg" class="icon" alt="Dashboard"
-        />Dashboard</a>
-    <a href="../irrigation/irrigation.html" class="menu-item"><img src="../assets/water-drop 5.svg" class="icon" alt="Irrigation"
-        />Irrigation</a>
-    <a href="../analytics/analytics.html" class="menu-item"><img src="../assets/Trending-up.svg" class="icon" alt="Analytics"
-        />Analytics</a>
-    <a href="../settings/settings.html" class="menu-item"><img src="../assets/settings-01.svg" class="icon" alt="Settings">Settings</a>
-
-    <div class="theme-section">
+            <div class="theme-section">
       <button class="theme-row" id="appearanceBtn">
         🌙 Appearance ›
       </button>
@@ -109,114 +84,60 @@
       </div>
 
     </div>
+      </div>
+      </div>
+    </div>
+  </header>
+  <div class="menu-overlay" id="menuOverlay"></div>
 
+  <!-- SIDEBAR -->
+  <div class="side-menu" id="sideMenu">
+    <button class="close-btn" id="closeBtn">✕</button>
+    <a href="../home/Home.html" class="menu-item"> <img src="../assets/Home.svg" class="icon">Home</a>
+    <a href="../dashboard/dashboard.html" class="menu-item active"><img src="../assets/Vector 48 (Stroke).svg"
+        class="icon">Dashboard</a>
+    <a href="../irrigation/irrigation.html" class="menu-item"><img src="../assets/water-drop 5.svg"
+        class="icon">Irrigation</a>
+    <a href="../analytics/analytics.html" class="menu-item"><img src="../assets/Trending-up.svg"
+        class="icon">Analytics</a>
+    <a href="../settings/settings.html" class="menu-item"><img src="../assets/settings-01.svg" class="icon">Settings</a>
   </div>
+
 
   <section class="hero">
     <div class="left">
+      <span class="hero-label">— Water from air</span>
+
       <h1>
-        What is a<br />
-        smart<br />
-        irrigation<br />
-        system?
+        Generate fresh <br>
+        water from thin air.
       </h1>
 
       <p>
-        A smart irrigation system uses advanced technology to optimize water
-        usage for agricultural or landscaping purposes. By integrating
-        sensors, weather data, and automated controls, these systems ensure
-        that plants receive the right amount of water at the right time,
-        promoting healthy growth while conserving water resources.
+        HydroGyn uses intelligent sensors to pull water directly from the atmosphere,
+        transforming irrigation and making reliable water access simple for farmers and growers.
+      </p>
+
+      <div class="hero-buttons">
+        <a href="#getintouch" class="btn primary" style="background-color: #06420d; color: white;">Get in Touch </a>
+        <span class="text">to Learn More</span>
+      </div>
       </p>
     </div>
 
     <div class="right">
       <div class="image-wrap">
-        <img src="../assets/Smart-Irrigation-Systems-scaled.jpeg" alt="Smart irrigation" />
+        <img src="../assets/farm-man-working-his-organic-lettuce-garden.jpg" alt="Smart irrigation" />
       </div>
     </div>
+
   </section>
-
-  <section class="features-intro reveal">
-    <h2>Our Offered Services</h2>
-    <p>
-      We are dedicated to bringing you smart and sustainable irrigation
-      solutions powered by AI — built
-      for efficiency and healthier crops.
-    </p>
-  </section>
-
-  <section class="features reveal">
-
-    <div class="feature-card">
-      <div class="card-inner">
-        <div class="card-front">
-          <img src="../assets/extract water.svg" alt="">
-          <h3>Extract Water from Air</h3>
-          <p>
-            Advanced technology to convert atmospheric humidity into pure water
-            for agricultural use.
-          </p>
-        </div>
-        <div class="card-back">
-          <h3>Extract Water from Air</h3>
-          <p>
-            Our atmospheric water generation technology captures humidity
-            and transforms it into purified water suitable for irrigation.
-            This system ensures farms in dry regions maintain sustainable
-            water supply without relying on groundwater depletion.
-          </p>
-        </div>
-      </div>
-    </div>
-    <div class="feature-card">
-      <div class="card-inner">
-        <div class="card-front">
-          <img src="../assets/clean.svg" alt="">
-          <h3>Clean & Sustainable Water</h3>
-          <p>
-            Ecofriendly system providing renewable water source without
-            depleting natural resources.
-          </p>
-        </div>
-        <div class="card-back">
-          <h3>Clean & Sustainable Water</h3>
-          <p>
-            HydroGen provides eco-friendly water solutions powered by
-            renewable energy. The system reduces environmental impact
-            while delivering consistent water quality for crops.
-          </p>
-        </div>
-      </div>
-    </div>
-    <div class="feature-card">
-      <div class="card-inner">
-        <div class="card-front">
-          <img src="../assets/smart&efficient irrigation.svg" alt="">
-          <h3>Smart & Efficient Irrigation</h3>
-          <p>
-            Automated irrigation control for efficient water distribution and
-            optimal agricultural results.
-          </p>
-        </div>
-        <div class="card-back">
-          <h3>Smart & Efficient Irrigation</h3>
-          <p>
-            AI automation analyzes soil moisture and weather conditions
-            to optimize irrigation schedules. This increases crop yield
-            while minimizing water waste and operational costs.
-          </p>
-        </div>
-      </div>
-    </div>
-  </section>
-
 
   <section class="SWG-section reveal">
 
     <div class="SWG-images">
-      <img src="../assets/representation.jpg" class="img-back" alt="Farm representation">
-      <img src="../assets/farm-man-working.jpg" class="img-front" alt="Farmer working in field">
+      <img src="../assets/representation.jpg" class="img-back">
+      <img src="../assets/farm-man-working.jpg" class="img-front">
     </div>
 
     <div class="SWG-content">
@@ -233,11 +154,11 @@
       <div class="SWG-features">
 
         <div class="feature">
-          💧 Water Optimization
+          💧 Reduce water consumption
         </div>
 
         <div class="feature">
-          🤖 AI Automation
+          🤖 Smart automated irrigation
         </div>
 
         <div class="feature">
@@ -245,7 +166,7 @@
         </div>
 
         <div class="feature">
-          📊 Real-time Monitoring
+          📊 Remote Monitoring
         </div>
 
       </div>
@@ -253,12 +174,31 @@
 
   </section>
 
-  <section class="testimonials reveal">
+  <section class="intro-section">
+    <span class="intro-label">— Social proof</span>
 
-    <h2>Best Feedback From Happy Clients</h2>
-    <p class="sub">
-      Real farmers using HydroGen smart irrigation every day
-    </p>
+    <!-- TOP TEXT -->
+    <div class="intro-text">
+
+      
+      <div class="intro-left">
+        <h2>
+          Early adopters trust<br>
+          HydroGyn's water<br>
+          technology
+        </h2>
+      </div>
+
+      
+      <div class="intro-right">
+        <p>
+          Best Feedback From Happy Clients:
+          Farmers and irrigation managers are seeing real results with HydroGyn's air-to-water systems. See what they're
+          experiencing firsthand. </p>
+      </div>
+
+    </div>
+
 
     <div class="testimonial-wrapper">
 
@@ -272,11 +212,11 @@
         </p>
 
         <div class="author">
-          <img src="https://randomuser.me/api/portraits/men/32.jpg" id="avatar" alt="User testimonial">
-        </div>
-        <div>
-          <strong id="name">Ahmed Hassan</strong>
-          <div id="role">Farm Owner — Delta Region</div>
+          <img src="https://randomuser.me/api/portraits/men/32.jpg" id="avatar">
+          <div>
+            <strong id="name">Ahmed Hassan</strong>
+            <div id="role">Farm Owner — Delta Region</div>
+          </div>
         </div>
 
 
@@ -285,188 +225,367 @@
       <button class="arrow right" onclick="nextTestimonial()">›</button>
 
     </div>
+    <div class="dots">
+      <span class="dot active" onclick="goToTestimonial(0)"></span>
+      <span class="dot" onclick="goToTestimonial(1)"></span>
+      <span class="dot" onclick="goToTestimonial(2)"></span>
+    </div>
 
   </section>
+
 
   <section class="pages-cards reveal">
+    <span class="card-label">— What we offer</span>
 
-    <div class="dash-card">
-      <div class="icon">
-        <img src="../assets/waterdrop.svg" alt="">
+    <div class="cards-top">
+
+      <!-- LEFT -->
+      <div class="cards-left">
+        <h2>
+          Water from air,
+          simplified irrigation,
+          smart management
+        </h2>
       </div>
-      <h3>Water Generation</h3>
-      <p>Extract clean water from atmospheric humidity using advanced condensation technology</p>
-      <button class="dash-btn" data-link="../dashboard/dashboard.html">
-        View Dashboard
-      </button>
+
+      <!-- RIGHT -->
+      <div class="cards-right">
+        <p>
+          HydroGyn delivers three core capabilities: atmospheric water generation,
+          sensor-driven irrigation control, and system data analytics. it provides settings also.
+          Each service works together to reduce water waste and improve crop yield.
+        </p>
+
+      </div>
+
     </div>
 
-    <div class="dash-card">
-      <div class="icon">
-        <img src="../assets/paper.svg" alt="">
+    <div class="cards-grid" id="cards">
+      <div class="dash-card">
+        <div class="icon">
+          <img src="../assets/dashboard page.svg" alt="">
+        </div>
+        <h3>Water Generation</h3>
+        <p>Extract clean water from atmospheric humidity using advanced condensation technology</p>
+        <button class="dash-btn" data-link="../dashboard/dashboard.html">
+          View Dashboard
+        </button>
       </div>
-      <h3>Smart Irrigation</h3>
-      <p>Automated irrigation scheduling based on weather, soil moisture, and plant needs</p>
-      <button class="dash-btn" data-link="../irrigation/irrigation.html">
-        Manage Zones
-      </button>
+
+      <div class="dash-card">
+        <div class="icon">
+          <img src="../assets/irrigation page.svg" alt="">
+        </div>
+        <h3>Smart Irrigation</h3>
+        <p>Automated irrigation scheduling based on weather, soil moisture, and plant needs</p>
+        <button class="dash-btn" data-link="../irrigation/irrigation.html">
+          Manage Zones
+        </button>
+      </div>
+
+      <div class="dash-card">
+        <div class="icon">
+          <img src="../assets/analytics page.svg" alt="">
+        </div>
+        <h3>Data Analytics</h3>
+        <p>Track water production, consumption patterns, and system efficiency over time</p>
+        <button class="dash-btn" data-link="../analytics/analytics.html">
+          View Analytics
+        </button>
+      </div>
+
+      <div class="dash-card">
+        <div class="icon">
+          <img src="../assets/settings page.svg" alt="">
+        </div>
+        <h3>System Settings</h3>
+        <p>Configure device parameters, schedules, and notifications to optimize performance</p>
+        <button class="dash-btn" data-link="../settings/settings.html">
+          Configure System
+        </button>
+      </div>
+
+  </section>
+
+  <section class="intro-section">
+    <span class="intro-label" id="howItWorks">— How it works</span>
+
+    <!-- TOP TEXT -->
+    <div class="intro-text">
+
+      
+      <div class="intro-left">
+        <h2>
+          Water from air.<br>
+          Intelligent irrigation.<br>
+          Simpler farming.
+        </h2>
+      </div>
+
+      
+      <div class="intro-right">
+        <p>
+          HydroGyn captures moisture from the air using integrated sensors,
+          then delivers precise water to your crops exactly when they need it.
+        </p>
+      </div>
+
     </div>
 
-    <div class="dash-card">
-      <div class="icon">
-        <img src="../assets/Analytics.svg" alt="">
-      </div>
-      <h3>Data Analytics</h3>
-      <p>Track water production, consumption patterns, and system efficiency over time</p>
-      <button class="dash-btn" data-link="../analytics/analytics.html">
-        View Analytics
-      </button>
-    </div>
+    <!-- FEATURES -->
+    <div class="features-grid">
 
-    <div class="dash-card">
-      <div class="icon">
-        <img src="../assets/Settings.svg" alt="">
+      <!-- CARD -->
+      <div class="features">
+        <img src="../assets/water extraction.webp">
+        <h3>Air-to-water extraction</h3>
+        <p>Pulls moisture directly from the air.</p>
       </div>
-      <h3>System Settings</h3>
-      <p>Configure device parameters, schedules, and notifications to optimize performance</p>
-      <button class="dash-btn" data-link="../settings/settings.html">
-        Configure System
-      </button>
+
+      <div class="features">
+        <img src="../assets/smart.png">
+        <h3>Smart sensor network</h3>
+        <p>Real-time soil and weather monitoring.</p>
+      </div>
+
+      <div class="features">
+        <img src="../assets/precise.webp">
+        <h3>Precise water delivery</h3>
+        <p>Only delivers exactly what plants need.</p>
+      </div>
+
+      <div class="features">
+        <img src="../assets/fully.png">
+        <h3>Fully automated control</h3>
+        <p>Set it and monitor remotely with real-time data.</p>
+      </div>
+
+      <div class="features">
+        <img src="../assets/Smart-Irrigation-Systems-scaled.jpeg">
+        <h3>Water source independence</h3>
+        <p>Works in dry climates where traditional irrigation fails.</p>
+      </div>
+
+      <div class="features">
+        <img src="../assets/reduces.png">
+        <h3>Reduces operating costs</h3>
+        <p>Lower bills and less manual labor.</p>
+      </div>
+
+
     </div>
 
   </section>
 
 
-  <section class="tank-section reveal">
+  <section class="sensor-hero reveal">
 
-    <div class="tank">
-      <div class="water" id="water">
-        <div class="water-top"></div>
+    <div class="sensor-hero-box">
+
+      <div class="sensor-hero-content">
+
+        
+        <div class="sensor-hero-image">
+          <img src="../assets/farm-man-working-his-organic-lettuce-garden.jpg" alt="">
+        </div>
+
+        
+        <div class="sensor-hero-text">
+          <h2> Smart Irrigation Sensors</h2>
+
+          <p>
+            Our system uses advanced IoT sensors to monitor environmental conditions
+            and optimize irrigation efficiency. These sensors improve crop health,
+            reduce water waste, and enable full automation of irrigation systems.
+          </p>
+        </div>
+
       </div>
-      <div class="label" id="percent">60%</div>
 
-      <div class="scale">
-        <div class="tick" data-position="3"><span>0%</span></div>
-        <div class="tick" data-position="25"><span>25%</span></div>
-        <div class="tick" data-position="50"><span>50%</span></div>
-        <div class="tick" data-position="75"><span>75%</span></div>
-        <div class="tick" data-position="97"><span>100%</span></div>
+    </div>
+
+  </section>
+
+  <section class="sensors-section reveal">
+
+    <div class="sensors-grid">
+
+      <div class="sensor-card">
+
+        <div class="sensor-left">
+          <div class="icon-circle">
+            <img src="../assets/temp.svg" alt="">
+          </div>
+          <div class="sensor-right">
+            <h3>Temperature Sensor</h3>
+
+            <div class="sensor-info">
+              <h4>Used for</h4>
+              <p>Measuring ambient temperature around crops</p>
+            </div>
+
+            <div class="sensor-info">
+              <h4>Assist in</h4>
+              <p>Maintaining optimal climate for plant growth</p>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Humidity -->
+      <div class="sensor-card">
+
+        <div class="sensor-left">
+          <div class="icon-circle">
+
+            <img src="../assets/humedity.svg" alt="">
+          </div>
+          <div class="sensor-right">
+            <h3>Humidity Sensor</h3>
+
+            <div class="sensor-info">
+              <h4>Used for</h4>
+              <p>Tracking air moisture levels in the environment</p>
+            </div>
+
+            <div class="sensor-info">
+              <h4>Assist in</h4>
+              <p>Preventing dryness and improving plant health</p>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div class="sensor-card">
+        <div class="sensor-left">
+          <div class="icon-circle">
+
+            <img src="../assets/soil.svg" alt="">
+          </div>
+          <div class="sensor-right">
+            <h3>Soil Moisture Sensor</h3>
+
+
+            <div class="sensor-info">
+              <h4>Used for</h4>
+              <p>Monitoring water content in soil</p>
+            </div>
+
+            <div class="sensor-info">
+              <h4>Assist in</h4>
+              <p>Automating irrigation and reducing water waste</p>
+            </div>
+          </div>
+        </div>
+      </div>
+
+
+      <!-- Pump -->
+      <div class="sensor-card">
+        <div class="sensor-left">
+          <div class="icon-circle">
+            <img src="../assets/waterdrop.svg">
+          </div>
+          <div class="sensor-right">
+
+            <h3>Pump Control</h3>
+
+            <div class="sensor-info">
+              <h4>Used for</h4>
+              <p>Controlling water flow in irrigation system</p>
+            </div>
+
+            <div class="sensor-info">
+              <h4>Assist in</h4>
+              <p>Efficient water distribution and system automation</p>
+            </div>
+          </div>
+        </div>
       </div>
 
     </div>
 
 
-    <div class="water-stats">
+  </section>
+
+  <section class="impact-section">
+    <span class="intro-label">— Our impact</span>
+
+    <div class="impact-top">
+
+      <!-- LEFT -->
+      <div class="impact-left">
+        <h2>
+          Turning air into <br>
+          water for farms <br>
+          across Egypt
+        </h2>
+      </div>
+
+      <!-- RIGHT -->
+      <div class="impact-right" style="margin-top: 50px;">
+        <p>
+          We're building the future of irrigation with technology that works.
+          Here's what we've accomplished since launch.
+        </p>
+
+        <div class="impact-buttons" style="margin-top: 50px;">
+          <a href="#howItWorks" class="btn primary">See how it works</a>
+          <a href="#getintouch" class="btn outline">Get in touch</a>
+        </div>
+      </div>
+
+    </div>
+
+    <!-- STATS -->
+    <div class="impact-stats">
+      <div class="divider"></div>
+      <div class="stat">
+        <h3 style="margin-top: 100px; margin-bottom: 20px;">1</h3>
+        <h4>Core technology</h4>
+        <p>
+          Patent-pending atmospheric water generation system with integrated sensor intelligence for precision
+          irrigation control. </p>
+      </div>
+
+      <div class="divider"></div>
 
       <div class="stat">
-        <h4>Current Level</h4>
-        <strong>285L</strong>
+        <h3 style="margin-top: 70px; margin-bottom: 20px;">100%</h3>
+        <h4>Water from air</h4>
+        <p>
+          Our system extracts usable water directly from ambient humidity,
+          eliminating dependence on traditional water sources. </p>
       </div>
+
+      <div class="divider"></div>
 
       <div class="stat">
-        <h4>Capacity</h4>
-        <strong>400L</strong>
+        <h3 style="margin-top: 40px;margin-bottom: 20px;">50%</h3>
+        <h4>Water savings potential</h4>
+        <p>
+          Intelligent sensor management optimizes irrigation timing and volume,
+          cutting water waste in half compared to standard methods. </p>
       </div>
 
-      <div class="stat wide">
-        <h4>Inflow Rate</h4>
-        <strong>2.4 L/h</strong>
+      <div class="divider"></div>
+
+      <div class="stat">
+        <h3 style="margin-top: 10px;margin-bottom: 20px;">2026</h3>
+        <h4>Launch year</h4>
+        <p>
+          HydroGyn started this year with a mission to revolutionize irrigation accessibility across Egypt and beyond.
+        </p>
       </div>
 
     </div>
 
   </section>
 
-  <div class="extra-stats">
-
-    <div class="extra-card">
-      <div class="icon">
-        <img src="../assets/waterdrop.svg" alt="">
-      </div>
-      <div>
-        <h4>Today's Production</h4>
-        <strong class="green">45.8L</strong>
-      </div>
-    </div>
-
-    <div class="extra-card">
-      <div class="icon">
-        <img src="../assets/humedity.svg" alt="">
-      </div>
-      <div>
-        <h4>Current Humidity</h4>
-        <strong>68%</strong>
-        <div class="bar"><span class="bar-fill" data-width="68"></span></div>
-      </div>
-    </div>
-
-    <div class="extra-card">
-      <div class="icon">
-        <img src="../assets/paper.svg" alt="">
-      </div>
-      <div>
-        <h4>Water Used for Irrigation</h4>
-        <strong class="green">32.5L</strong>
-      </div>
-    </div>
-
-    <div class="extra-card">
-      <div class="icon">
-        <img src="../assets/efficincy.svg" alt="">
-      </div>
-      <div>
-        <h4>Efficiency</h4>
-        <strong>94%</strong>
-        <div class="bar"><span class="bar-fill" data-width="94"></span></div>
-      </div>
-    </div>
-
-  </div>
 
 
-  <section class="impact-section reveal">
 
-    <div class="impact-card">
-      <h3>Sustainability Impact</h3>
-
-      <div class="impact-row">
-        <span>CO₂ Offset</span>
-        <strong class="green">342 kg</strong>
-      </div>
-
-      <div class="impact-row">
-        <span>Energy Saved</span>
-        <strong class="green">1,245 kWh</strong>
-      </div>
-
-      <div class="impact-row">
-        <span>Water Harvested</span>
-        <strong class="green">15,680 L</strong>
-      </div>
-    </div>
-
-    <div class="impact-card">
-      <h3>System Health</h3>
-
-      <div class="impact-row">
-        <span>Generator Status</span>
-        <strong class="green">Optimal</strong>
-      </div>
-
-      <div class="impact-row">
-        <span>Filter Life</span>
-        <strong class="blue">87%</strong>
-      </div>
-
-      <div class="impact-row">
-        <span>Next Maintenance</span>
-        <strong class="green">45 days</strong>
-      </div>
-    </div>
-
-  </section>
-
-  <section class="contact-section reveal">
+  <section class="contact-section reveal" id="getintouch">
 
     <div class="contact-image">
       <img src="../assets/futuristic-technology-concept.jpg" alt="farmer">
@@ -476,26 +595,28 @@
 
       <h2>Get In Touch</h2>
 
-      <form>
+      <form id="contactForm">
 
         <div class="row">
           <div class="field">
             <label>Name</label>
-            <input type="text" placeholder="Full name">
+            <input type="text" id="contactName" placeholder="Full name" required>
           </div>
 
           <div class="field">
             <label>Email</label>
-            <input type="email" placeholder="Your e-mail">
+            <input type="email" id="contactEmail" placeholder="Your e-mail" required>
           </div>
         </div>
 
         <div class="field">
           <label>Message</label>
-          <textarea placeholder="Your message"></textarea>
+          <textarea id="contactMessage" placeholder="Your message" required></textarea>
         </div>
 
-        <button type="submit">Send message</button>
+        <button type="submit" id="contactSubmitBtn">Send message</button>
+
+        <p id="contactFeedback" style="margin-top:12px;font-size:14px;display:none;"></p>
 
       </form>
 
@@ -521,25 +642,28 @@
       <div>
         <h4>Company</h4>
         <a href="../about/about.html">About</a>
-        <a href="#">Careers</a>
+        <a href="../services/services.html">Services</a>
+        <a href="../our story/our_story.html">our story</a>
+
       </div>
 
       <div>
         <h4>Contact</h4>
-        <a href="https://wa.me/201005339569?text=Hello%20I%20want%20to%20ask%20about%20the%20app" target="_blank" rel="noopener">
-          <img src="../assets/whatsapp.svg" alt="WhatsApp icon" class="contact-icon">
+        <a href="https://wa.me/201005339569?text=Hello%20I%20want%20to%20ask%20about%20the%20app" target="_blank">
+
+          <img src="../assets/whatsapp.svg" alt="" style="width: 20px; height: 20px;">
           Chat on WhatsApp
         </a>
         <a href="tel:+201005339569">
-          <img src="../assets/call.svg" alt="Call icon" class="contact-icon">
+          <img src="../assets/call.svg" alt="" style="width: 20px; height: 20px; ">
           call
         </a>
         <a href="mailto:info@hydrogen.com">
-          <img src="../assets/email.svg" alt="Email icon" class="contact-icon">
+          <img src="../assets/email.svg" alt="" style="width: 20px; height: 20px;">
           send email
         </a>
-        <a href="https://maps.google.com/?q=Cairo,Egypt" target="_blank" rel="noopener">
-          <img src="../assets/location.svg" alt="Location icon" class="contact-icon">
+        <a href="https://maps.google.com/?q=Cairo,Egypt" target="_blank">
+          <img src="../assets/location.svg" alt="" style="width: 20px; height: 20px; ">
           visit us</a>
       </div>
 
@@ -551,8 +675,71 @@
   </footer>
 
 
-  <script src="home.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/10.7.1/firebase-app-compat.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/10.7.1/firebase-auth-compat.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/10.7.1/firebase-database-compat.js"></script>
+  <script src="../firebase/firebase-config.js"></script>
+  <script src="Home.js"></script>
   <script src="../theme/theme.js"></script>
+
+  <script>
+    (function () {
+      const form        = document.getElementById("contactForm");
+      const submitBtn   = document.getElementById("contactSubmitBtn");
+      const feedback    = document.getElementById("contactFeedback");
+
+      function showFeedback(msg, ok) {
+        feedback.textContent = msg;
+        feedback.style.color = ok ? "#22c55e" : "#ef4444";
+        feedback.style.display = "block";
+      }
+
+      form?.addEventListener("submit", async (e) => {
+        e.preventDefault();
+
+        const name    = document.getElementById("contactName").value.trim();
+        const email   = document.getElementById("contactEmail").value.trim();
+        const message = document.getElementById("contactMessage").value.trim();
+
+        if (!name || !email || !message) {
+          showFeedback("Please fill all fields.", false);
+          return;
+        }
+
+        submitBtn.disabled    = true;
+        submitBtn.textContent = "Sending...";
+        feedback.style.display = "none";
+
+        try {
+          const response = await fetch("https://formsubmit.co/ajax/smartirrigation859@gmail.com", {
+            method: "POST",
+            headers: {
+                'Content-Type': 'application/json',
+                'Accept': 'application/json'
+            },
+            body: JSON.stringify({
+                name: name,
+                email: email,
+                message: message
+            })
+          });
+
+          if (response.ok) {
+            showFeedback("✅ Message sent successfully!", true);
+            form.reset();
+          } else {
+            throw new Error("Failed");
+          }
+        } catch (err) {
+          console.error("Form error:", err);
+          showFeedback("❌ Failed to send. Please try again.", false);
+        } finally {
+          submitBtn.disabled    = false;
+          submitBtn.textContent = "Send message";
+        }
+      });
+    })();
+  </script>
 </body>
 
 </html>
