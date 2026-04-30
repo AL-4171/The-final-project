@@ -1383,3 +1383,16 @@ body.dark .nav-submenu a:hover{
   background-color: #fff !important;
   color: #1b1b1b !important;
 }
+
+.reports-trigger{
+    background: transparent !important;
+    color: #cbd5e1 !important;
+    padding: 0 !important;
+    border: none !important;
+    box-shadow: none !important;
+}
+
+.reports-trigger:hover{
+    background: transparent !important;
+    color: #ffe44d !important;
+}
