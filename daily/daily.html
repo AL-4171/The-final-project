@@ -13,7 +13,7 @@
     <link rel="stylesheet" href="daily.css" />
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/chartjs-adapter-date-fns"></script>
-    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
     <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
 </head>
 
@@ -115,20 +115,21 @@
     <a href="../analytics/analytics.html" class="menu-item"><img src="../assets/Trending-up.svg"
         class="icon">Analytics</a>
     <a href="../settings/settings.html" class="menu-item"><img src="../assets/settings-01.svg" class="icon">Settings</a>
-    <div class="reports-section">
-      <button class="reports-row" id="reportsBtnMobile">
-        <span>
-          <img src="../assets/reports.svg" alt="">
-        </span> Reports ›
-      </button>
+<div class="reports-section">
 
-      <div class="reports-submenu" id="reportsMenuMobile">
-        <a href="../daily/daily.html">Daily Reports</a>
-        <a href="../weekly/weekly.html">Weekly Reports</a>
-        <a href="../monthly/monthly.html">Monthly Reports</a>
-      </div>
+  <a href="#" class="menu-item reports-toggle" id="reportsBtnMobile">
+    <img src="../assets/reports.svg" class="icon">
+    <span>Reports</span>
+    <span class="report-arrow">›</span>
+  </a>
 
-    </div>
+  <div class="reports-submenu" id="reportsMenuMobile">
+    <a href="../daily/daily.html" class="menu-item sub-link">Daily Reports</a>
+    <a href="../weekly/weekly.html" class="menu-item sub-link">Weekly Reports</a>
+    <a href="../monthly/monthly.html" class="menu-item sub-link">Monthly Reports</a>
+  </div>
+
+</div>
   </div>
 
 

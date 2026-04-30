@@ -1396,3 +1396,39 @@ body.dark .nav-submenu a:hover{
     background: transparent !important;
     color: #ffe44d !important;
 }
+
+.reports-section{
+    width:100%;
+}
+
+.reports-toggle{
+    width:100%;
+}
+
+.report-arrow{
+    margin-left:auto;
+    font-size:22px;
+    transition:.3s;
+}
+
+.reports-toggle.active .report-arrow{
+    transform:rotate(90deg);
+}
+
+.reports-submenu{
+    display:none;
+    padding-left:14px;
+    margin-top:6px;
+    flex-direction:column;
+    gap:8px;
+}
+
+.reports-submenu.show{
+    display:flex;
+}
+
+.sub-link{
+    font-size:16px;
+    padding:8px 14px;
+    opacity:.9;
+}

@@ -9,9 +9,12 @@ function initTheme() {
   const sideMenu = document.getElementById("sideMenu");
   const overlay = document.getElementById("menuOverlay");
 
+  const navLinks = document.getElementById("navLinks");
+
   menuBtn?.addEventListener("click", () => {
     sideMenu?.classList.add("active");
     overlay?.classList.add("active");
+    navLinks?.classList.toggle("show");
   });
 
   closeBtn?.addEventListener("click", () => {
@@ -23,6 +26,26 @@ function initTheme() {
     sideMenu?.classList.remove("active");
     overlay?.classList.remove("active");
   });
+
+
+  /* ===============================
+     REPORTS SUBMENU
+  =============================== */
+
+  // Desktop
+  const reportsBtnDesktop =
+    document.getElementById("reportsBtnDesktop");
+
+  const reportsMenuDesktop =
+    document.getElementById("reportsMenuDesktop");
+
+
+  // Mobile
+  const reportsBtnMobile =
+    document.getElementById("reportsBtnMobile");
+
+  const reportsMenuMobile =
+    document.getElementById("reportsMenuMobile");
 
 
   /* ===============================
@@ -45,15 +68,19 @@ function initTheme() {
 
   ["appearanceBtn", "appearanceBtn2"].forEach(id => {
     const btn = document.getElementById(id);
+
     const menu = document.getElementById(
       id === "appearanceBtn" ? "themeMenu" : "themeMenu2"
     );
 
     btn?.addEventListener("click", e => {
       e.stopPropagation();
+
       if (menu) {
         menu.style.display =
-          menu.style.display === "flex" ? "none" : "flex";
+          menu.style.display === "flex"
+            ? "none"
+            : "flex";
       }
     });
   });
@@ -63,15 +90,17 @@ function initTheme() {
       localStorage.setItem("theme", btn.dataset.theme);
       applyTheme(btn.dataset.theme);
 
-      document.querySelectorAll(".theme-submenu").forEach(menu => {
-        menu.style.display = "none";
-      });
+      document.querySelectorAll(".theme-submenu")
+        .forEach(menu => menu.style.display = "none");
     });
   });
 
   window.matchMedia("(prefers-color-scheme: dark)")
     .addEventListener("change", () => {
-      if ((localStorage.getItem("theme") || "system") === "system") {
+      if (
+        (localStorage.getItem("theme") || "system")
+        === "system"
+      ) {
         applyTheme("system");
       }
     });
@@ -80,13 +109,33 @@ function initTheme() {
   /* ===============================
      PROFILE DROPDOWN
   =============================== */
-  const profileBtn = document.getElementById("profileBtn");
-  const profileDropdown = document.getElementById("profileDropdown");
+  const profileBtn =
+    document.getElementById("profileBtn");
+
+  const profileDropdown =
+    document.getElementById("profileDropdown");
+
+
+  function closeAllMenus() {
+
+    profileDropdown?.classList.remove("active");
+
+    document.querySelector(".notification-wrapper")
+      ?.classList.remove("active");
+
+    document.querySelectorAll(".theme-submenu")
+      .forEach(menu => menu.style.display = "none");
+
+    reportsMenuDesktop?.classList.remove("show");
+    reportsMenuMobile?.classList.remove("show");
+  }
+
 
   profileBtn?.addEventListener("click", e => {
     e.stopPropagation();
 
-    const opened = profileDropdown?.classList.contains("active");
+    const opened =
+      profileDropdown?.classList.contains("active");
 
     closeAllMenus();
 
@@ -95,18 +144,6 @@ function initTheme() {
     }
   });
 
-  function closeAllMenus() {
-    profileDropdown?.classList.remove("active");
-    document.querySelector(".notification-wrapper")
-      ?.classList.remove("active");
-
-    document.querySelectorAll(".theme-submenu").forEach(menu => {
-      menu.style.display = "none";
-    });
-
-    reportsMenuDesktop?.classList.remove("show");
-    reportsMenuMobile?.classList.remove("show");
-  }
 
   document.addEventListener("click", e => {
     if (
@@ -126,13 +163,23 @@ function initTheme() {
     const user = raw ? JSON.parse(raw) : null;
 
     if (user) {
-      const name = user.name || user.email || "User";
-      const email = user.email || "";
-      const initial = name[0].toUpperCase();
+      const name =
+        user.name || user.email || "User";
 
-      const username = document.getElementById("username");
-      const emailEl = document.getElementById("email");
-      const avatar = document.querySelector(".avatar");
+      const email =
+        user.email || "";
+
+      const initial =
+        name[0].toUpperCase();
+
+      const username =
+        document.getElementById("username");
+
+      const emailEl =
+        document.getElementById("email");
+
+      const avatar =
+        document.querySelector(".avatar");
 
       if (username) username.textContent = name;
       if (emailEl) emailEl.textContent = email;
@@ -150,23 +197,34 @@ function initTheme() {
         ];
 
         avatar.style.backgroundColor =
-          colors[initial.charCodeAt(0) % colors.length];
+          colors[
+            initial.charCodeAt(0)
+            % colors.length
+          ];
       }
     }
-  } catch (e) {}
+
+  } catch (e) { }
 
 
   /* ===============================
      SWITCH ACCOUNT
   =============================== */
-  document.querySelectorAll(".drop-item").forEach(btn => {
-    if (btn.textContent.trim().startsWith("Switch")) {
-      btn.addEventListener("click", () => {
-        localStorage.removeItem("hydroUser");
-        window.location.href = "../login/Login.html";
-      });
-    }
-  });
+  document.querySelectorAll(".drop-item")
+    .forEach(btn => {
+
+      if (
+        btn.textContent.trim()
+          .startsWith("Switch")
+      ) {
+        btn.addEventListener("click", () => {
+          localStorage.removeItem("hydroUser");
+          window.location.href =
+            "../login/Login.html";
+        });
+      }
+
+    });
 
 
   /* ===============================
@@ -174,19 +232,27 @@ function initTheme() {
   =============================== */
   document.getElementById("logoutBtn")
     ?.addEventListener("click", () => {
+
       localStorage.removeItem("hydroUser");
-      window.location.href = "../landing/landing.html";
+
+      window.location.href =
+        "../landing/landing.html";
     });
 
 
   /* ===============================
      NOTIFICATIONS
   =============================== */
-  const notifToggle = document.getElementById("notifToggle");
-  const notifWrapper = document.querySelector(".notification-wrapper");
+  const notifToggle =
+    document.getElementById("notifToggle");
+
+  const notifWrapper =
+    document.querySelector(".notification-wrapper");
+
 
   notifToggle?.addEventListener("click", e => {
     e.stopPropagation();
+
     notifWrapper?.classList.toggle("active");
   });
 
@@ -198,16 +264,8 @@ function initTheme() {
 
 
   /* ===============================
-     REPORTS SUBMENU
+     REPORTS CLICK
   =============================== */
-
-  // Desktop
-  const reportsBtnDesktop =
-    document.getElementById("reportsBtnDesktop");
-
-  const reportsMenuDesktop =
-    document.getElementById("reportsMenuDesktop");
-
 
   reportsBtnDesktop?.addEventListener("click", e => {
     e.preventDefault();
@@ -215,14 +273,6 @@ function initTheme() {
 
     reportsMenuDesktop?.classList.toggle("show");
   });
-
-
-  // Mobile
-  const reportsBtnMobile =
-    document.getElementById("reportsBtnMobile");
-
-  const reportsMenuMobile =
-    document.getElementById("reportsMenuMobile");
 
 
   reportsBtnMobile?.addEventListener("click", e => {
@@ -233,7 +283,6 @@ function initTheme() {
   });
 
 
-  // Close outside
   document.addEventListener("click", e => {
 
     if (
@@ -252,16 +301,6 @@ function initTheme() {
 
   });
 
-
-  /* ===============================
-     MOBILE NAV LINKS (optional)
-  =============================== */
-  const navLinks = document.getElementById("navLinks");
-
-  menuBtn?.addEventListener("click", () => {
-    navLinks?.classList.toggle("show");
-  });
-
 }
 
 
@@ -269,7 +308,10 @@ function initTheme() {
    INIT
 =============================== */
 if (document.readyState === "loading") {
-  document.addEventListener("DOMContentLoaded", initTheme);
+  document.addEventListener(
+    "DOMContentLoaded",
+    initTheme
+  );
 } else {
   initTheme();
 }

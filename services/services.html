@@ -10,11 +10,13 @@
   <link rel="stylesheet" href="../theme/design-system.css" />
   <link rel="stylesheet" href="../home/Home.css" />
   <link rel="stylesheet" href="services.css" />
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
+
 
 </head>
 
 <body>
-   <header class="header">
+  <header class="header">
     <nav class="main-nav">
       <div class="nav-left">
         <button class="menu-btn" id="menuBtn" aria-label="Open menu">☰</button>
@@ -32,10 +34,10 @@
             <button class="reports-trigger" id="reportsBtnDesktop">
               Reports
               <span class="arrow-icon" id="reportsArrow">
-                  <svg width="14" height="14" viewBox="0 0 24 24" fill="none">
-                    <path d="M6 9L12 15L18 9" stroke="currentColor" stroke-width="2" stroke-linecap="round" />
-                  </svg>
-                </span></span>
+                <svg width="14" height="14" viewBox="0 0 24 24" fill="none">
+                  <path d="M6 9L12 15L18 9" stroke="currentColor" stroke-width="2" stroke-linecap="round" />
+                </svg>
+              </span></span>
             </button>
 
             <div class="nav-submenu" id="reportsMenuDesktop">
@@ -112,16 +114,17 @@
         class="icon">Analytics</a>
     <a href="../settings/settings.html" class="menu-item"><img src="../assets/settings-01.svg" class="icon">Settings</a>
     <div class="reports-section">
-      <button class="reports-row" id="reportsBtnMobile">
-        <span>
-          <img src="../assets/reports.svg" alt="">
-        </span> Reports ›
-      </button>
+
+      <a href="#" class="menu-item reports-toggle" id="reportsBtnMobile">
+        <img src="../assets/reports.svg" class="icon">
+        <span>Reports</span>
+        <span class="report-arrow">›</span>
+      </a>
 
       <div class="reports-submenu" id="reportsMenuMobile">
-        <a href="../daily/daily.html">Daily Reports</a>
-        <a href="../weekly/weekly.html">Weekly Reports</a>
-        <a href="../monthly/monthly.html">Monthly Reports</a>
+        <a href="../daily/daily.html" class="menu-item sub-link">Daily Reports</a>
+        <a href="../weekly/weekly.html" class="menu-item sub-link">Weekly Reports</a>
+        <a href="../monthly/monthly.html" class="menu-item sub-link">Monthly Reports</a>
       </div>
 
     </div>

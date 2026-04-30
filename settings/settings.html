@@ -12,7 +12,7 @@
     <!-- Reusing Home.css for header/sidebar consistent styling -->
     <link rel="stylesheet" href="../home/Home.css" />
     <link rel="stylesheet" href="settings.css" />
-    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
     <script>
         (function () { if (!localStorage.getItem("hydroUser")) window.location.replace("../landing/landing.html"); })();
     </script>
@@ -114,23 +114,24 @@
         class="icon">Dashboard</a>
     <a href="../irrigation/irrigation.html" class="menu-item"><img src="../assets/water-drop 5.svg"
         class="icon">Irrigation</a>
-    <a href="../analytics/analytics.html" class="menu-item"><img src="../assets/Trending-up.svg"
+    <a href="../analytics/analytics.html" class="menu-item "><img src="../assets/Trending-up.svg"
         class="icon">Analytics</a>
     <a href="../settings/settings.html" class="menu-item active"><img src="../assets/settings-01.svg" class="icon">Settings</a>
-    <div class="reports-section">
-      <button class="reports-row" id="reportsBtnMobile">
-        <span>
-          <img src="../assets/reports.svg" alt="">
-        </span> Reports ›
-      </button>
+<div class="reports-section">
 
-      <div class="reports-submenu" id="reportsMenuMobile">
-        <a href="../daily/daily.html">Daily Reports</a>
-        <a href="../weekly/weekly.html">Weekly Reports</a>
-        <a href="../monthly/monthly.html">Monthly Reports</a>
-      </div>
+  <a href="#" class="menu-item reports-toggle" id="reportsBtnMobile">
+    <img src="../assets/reports.svg" class="icon">
+    <span>Reports</span>
+    <span class="report-arrow">›</span>
+  </a>
 
-    </div>
+  <div class="reports-submenu" id="reportsMenuMobile">
+    <a href="../daily/daily.html" class="menu-item sub-link">Daily Reports</a>
+    <a href="../weekly/weekly.html" class="menu-item sub-link">Weekly Reports</a>
+    <a href="../monthly/monthly.html" class="menu-item sub-link">Monthly Reports</a>
+  </div>
+
+</div>
   </div>
     <!-- MAIN SETTINGS CONTENT -->
     <main class="bento-container">
