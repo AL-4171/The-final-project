@@ -1,0 +1,391 @@
+<!doctype html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Reports – HydroGen</title>
+
+  <!-- Bootstrap (same as Home.html) -->
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet" />
+  <!-- Font Awesome (same as Home.html) -->
+ <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css"/>
+  <!-- Shared site theme files (adjust paths to match your project) -->
+  <!-- <link rel="stylesheet" href="../theme/theme.css" /> -->
+  <!-- Reports page stylesheet -->
+  <link rel="stylesheet" href="reports.css" />
+</head>
+
+<body>
+
+  <!-- ======================== APP BANNER ======================== -->
+  <div class="app-banner" id="appBanner">
+    <img src="../assets/Frame 4111.svg" alt="app icon"
+         onerror="this.style.display='none'">
+    <div class="banner-text">
+      <strong>HydroGen (Smart Water Solution App)</strong>
+      <p>Open the app for a better experience</p>
+    </div>
+    <button onclick="openApp()">Open</button>
+    <span class="close" onclick="closeBanner()">✕</span>
+  </div>
+
+  <!-- ======================== HEADER ======================== -->
+  <header class="header">
+    <nav class="nav-left">
+
+      <!-- Hamburger (mobile only) -->
+      <button class="menu-btn" id="menuBtn" aria-label="Open menu">☰</button>
+
+      <!-- Logo -->
+      <a href="../home/Home.html" class="logo">
+        <img src="../assets/water-drop-rain-drink 1.svg" alt="HydroGen Logo" class="icon"
+             onerror="this.style.display='none'">
+        HydroGen
+        <span class="nav-divider"></span>
+      </a>
+
+      <!-- Desktop nav links -->
+      <div class="nav-links">
+        <a href="../dashboard/dashboard.html">Dashboard</a>
+        <a href="../irrigation/irrigation.html">Irrigation</a>
+        <a href="../analytics/analytics.html">Analytics</a>
+
+        <!-- Reports dropdown — active on this page -->
+        <div class="nav-dropdown">
+          <button class="reports-trigger active-page" id="reportsBtnDesktop">
+            Reports
+            <span class="arrow-icon" id="reportsArrow">
+              <svg width="14" height="14" viewBox="0 0 24 24" fill="none">
+                <path d="M6 9L12 15L18 9" stroke="currentColor" stroke-width="2" stroke-linecap="round"/>
+              </svg>
+            </span>
+          </button>
+          <div class="nav-submenu" id="reportsMenuDesktop">
+            <a href="../daily/daily.html">Daily</a>
+            <a href="../weekly/weekly.html">Weekly</a>
+            <a href="../monthly/monthly.html">Monthly</a>
+          </div>
+        </div>
+
+        <a href="../settings/settings.html">Settings</a>
+      </div>
+
+    </nav>
+
+    <!-- Nav right — bell + profile -->
+    <div class="nav-right">
+
+      <!-- Notification bell -->
+      <div class="notification-wrapper">
+        <i class="fas fa-bell notification-icon" id="notifToggle"></i>
+        <span class="notif-badge" id="notifBadge"></span>
+        <div class="notification-dropdown">
+          <div class="bento-card">
+            <h6>Active Alerts</h6>
+            <div id="alertsContainer">
+              <p style="font-size:13px;opacity:.5;margin:0;">No active alerts.</p>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Profile menu -->
+      <div class="profile-menu">
+        <button class="profile-btn" id="profileBtn">
+          <img src="../assets/Vector.svg" id="profileImage" alt="profile"
+               onerror="this.style.background='#9bbf73';this.style.borderRadius='50%'">
+        </button>
+
+        <div class="profile-dropdown" id="profileDropdown">
+          <div class="profile-header">
+            <div class="avatar">U</div>
+            <div class="user-info">
+              <strong id="username">User Name</strong>
+              <p id="email">email@example.com</p>
+            </div>
+          </div>
+
+          <hr>
+
+          <button class="drop-item">
+            <img src="../assets/switch.svg" alt="" class="icon"
+                 onerror="this.style.display='none'">
+            Switch account
+          </button>
+
+          <button class="drop-item danger" id="logoutBtn">
+            <img src="../assets/logout.svg" alt="" class="icon"
+                 onerror="this.style.display='none'">
+            Log out
+          </button>
+
+          <!-- Theme switcher -->
+          <div class="theme-section">
+            <button class="theme-row" id="appearanceBtn">🌙 Appearance ›</button>
+            <div class="theme-submenu" id="themeMenu">
+              <button data-theme="system">Use device theme</button>
+              <button data-theme="dark">Dark theme</button>
+              <button data-theme="light">Light theme</button>
+            </div>
+          </div>
+
+        </div><!-- /profile-dropdown -->
+      </div><!-- /profile-menu -->
+
+    </div><!-- /nav-right -->
+  </header>
+
+  <!-- Overlay (closes sidebar on mobile) -->
+  <div class="menu-overlay" id="menuOverlay"></div>
+
+  <!-- ======================== SIDEBAR ======================== -->
+  <div class="side-menu" id="sideMenu">
+    <button class="close-btn" id="closeBtn">✕</button>
+
+    <a href="../home/Home.html" class="menu-item">
+      <img src="../assets/Home.svg" class="icon" onerror="this.style.display='none'">
+      Home
+    </a>
+    <a href="../dashboard/dashboard.html" class="menu-item">
+      <img src="../assets/Vector 48 (Stroke).svg" class="icon" onerror="this.style.display='none'">
+      Dashboard
+    </a>
+    <a href="../irrigation/irrigation.html" class="menu-item">
+      <img src="../assets/water-drop 5.svg" class="icon" onerror="this.style.display='none'">
+      Irrigation
+    </a>
+    <a href="../analytics/analytics.html" class="menu-item">
+      <img src="../assets/Trending-up.svg" class="icon" onerror="this.style.display='none'">
+      Analytics
+    </a>
+    <a href="../settings/settings.html" class="menu-item">
+      <img src="../assets/settings-01.svg" class="icon" onerror="this.style.display='none'">
+      Settings
+    </a>
+
+    <!-- Reports accordion (active on this page) -->
+    <div class="reports-section">
+      <a href="#" class="menu-item reports-toggle active" id="reportsBtnMobile">
+        <img src="../assets/reports.svg" class="icon" onerror="this.style.display='none'">
+        <span>Reports</span>
+        <span class="report-arrow open" id="mobileArrow">›</span>
+      </a>
+      <div class="reports-submenu open" id="reportsMenuMobile">
+        <a href="../daily/daily.html"    class="menu-item sub-link">Daily Reports</a>
+        <a href="../weekly/weekly.html"  class="menu-item sub-link">Weekly Reports</a>
+        <a href="../monthly/monthly.html" class="menu-item sub-link">Monthly Reports</a>
+      </div>
+    </div>
+
+  </div><!-- /side-menu -->
+
+  <!-- ======================== MAIN ======================== -->
+  <main class="page-wrapper">
+
+    <!-- Page heading -->
+    <header class="page-header reveal">
+      <p class="label">— Data &amp; Insights</p>
+      <h1>Download <span>Reports</span></h1>
+      <p>Access and export your irrigation performance data —
+         daily, weekly, and monthly summaries.</p>
+    </header>
+
+    <!-- Summary cards -->
+    <div class="summary-grid reveal" style="transition-delay:.1s">
+
+      <div class="summary-card">
+        <div class="summary-icon green">
+          <i class="fas fa-calendar-day"></i>
+        </div>
+        <div class="summary-info">
+          <div class="summary-label">Daily Reports</div>
+          <div class="summary-value">Today</div>
+        </div>
+      </div>
+
+      <div class="summary-card">
+        <div class="summary-icon lime">
+          <i class="fas fa-calendar-week"></i>
+        </div>
+        <div class="summary-info">
+          <div class="summary-label">Weekly Reports</div>
+          <div class="summary-value">This Week</div>
+        </div>
+      </div>
+
+      <div class="summary-card">
+        <div class="summary-icon yellow">
+          <i class="fas fa-calendar-alt"></i>
+        </div>
+        <div class="summary-info">
+          <div class="summary-label">Monthly Reports</div>
+          <div class="summary-value">This Month</div>
+        </div>
+      </div>
+
+    </div><!-- /summary-grid -->
+
+    <!-- Reports table card -->
+    <div class="reports-card reveal" style="transition-delay:.2s">
+      <table class="reports-table" aria-label="Download Reports">
+        <thead>
+          <tr>
+            <th>Report Type</th>
+            <th class="col-status">Status</th>
+            <th class="col-updated">Last Updated</th>
+            <th>Actions</th>
+          </tr>
+        </thead>
+        <tbody>
+
+          <!-- Row 1 — Daily -->
+          <tr>
+            <td>
+              <div class="report-type">
+                <div class="report-icon icon-daily">
+                  <i class="fas fa-calendar-day"></i>
+                </div>
+                <div class="report-meta">
+                  <div class="report-name">Daily Report</div>
+                  <div class="report-desc">24-hour irrigation &amp; water usage summary</div>
+                </div>
+              </div>
+            </td>
+            <td class="col-status">
+              <span class="status-badge ready">
+                <span class="status-dot"></span> Ready
+              </span>
+            </td>
+            <td class="col-updated">
+              <span class="updated-text">Today, 06:00 AM</span>
+            </td>
+            <td class="actions-cell">
+              <button class="btn-view"     onclick="viewReport('daily')">
+                <i class="fas fa-eye"></i><span>View</span>
+              </button>
+              <button class="btn-download" onclick="downloadReport('daily')">
+                <i class="fas fa-download"></i><span>Download</span>
+              </button>
+            </td>
+          </tr>
+
+          <!-- Row 2 — Weekly -->
+          <tr>
+            <td>
+              <div class="report-type">
+                <div class="report-icon icon-weekly">
+                  <i class="fas fa-calendar-week"></i>
+                </div>
+                <div class="report-meta">
+                  <div class="report-name">Weekly Report</div>
+                  <div class="report-desc">7-day performance &amp; efficiency overview</div>
+                </div>
+              </div>
+            </td>
+            <td class="col-status">
+              <span class="status-badge ready">
+                <span class="status-dot"></span> Ready
+              </span>
+            </td>
+            <td class="col-updated">
+              <span class="updated-text">Mon, 12:00 AM</span>
+            </td>
+            <td class="actions-cell">
+              <button class="btn-view"     onclick="viewReport('weekly')">
+                <i class="fas fa-eye"></i><span>View</span>
+              </button>
+              <button class="btn-download" onclick="downloadReport('weekly')">
+                <i class="fas fa-download"></i><span>Download</span>
+              </button>
+            </td>
+          </tr>
+
+          <!-- Row 3 — Monthly -->
+          <tr>
+            <td>
+              <div class="report-type">
+                <div class="report-icon icon-monthly">
+                  <i class="fas fa-calendar-alt"></i>
+                </div>
+                <div class="report-meta">
+                  <div class="report-name">Monthly Report</div>
+                  <div class="report-desc">Full-month analytics, savings &amp; crop data</div>
+                </div>
+              </div>
+            </td>
+            <td class="col-status">
+              <span class="status-badge ready">
+                <span class="status-dot"></span> Ready
+              </span>
+            </td>
+            <td class="col-updated">
+              <span class="updated-text">1 May, 12:00 AM</span>
+            </td>
+            <td class="actions-cell">
+              <button class="btn-view"     onclick="viewReport('monthly')">
+                <i class="fas fa-eye"></i><span>View</span>
+              </button>
+              <button class="btn-download" onclick="downloadReport('monthly')">
+                <i class="fas fa-download"></i><span>Download</span>
+              </button>
+            </td>
+          </tr>
+
+        </tbody>
+      </table>
+    </div><!-- /reports-card -->
+
+  </main>
+
+  <!-- ======================== FOOTER ======================== -->
+  <footer class="footer">
+    <div class="footer-grid">
+
+      <div>
+        <h3>HydroGen</h3>
+        <p>Smart irrigation platform powered by AI to save water and grow healthier crops.</p>
+      </div>
+
+      <div>
+        <h4>Platform</h4>
+        <a href="../dashboard/dashboard.html">Dashboard</a>
+        <a href="../irrigation/irrigation.html">Irrigation</a>
+        <a href="../analytics/analytics.html">Analytics</a>
+      </div>
+
+      <div>
+        <h4>Company</h4>
+        <a href="../about/about.html">About</a>
+        <a href="../services/services.html">Services</a>
+        <a href="../our story/our_story.html">Our Story</a>
+      </div>
+
+      <div>
+        <h4>Contact</h4>
+        <a href="https://wa.me/201005339569" target="_blank">
+          <img src="../assets/whatsapp.svg" alt="" onerror="this.style.display='none'">
+          Chat on WhatsApp
+        </a>
+        <a href="tel:+201005339569">
+          <img src="../assets/call.svg" alt="" onerror="this.style.display='none'">
+          Call
+        </a>
+        <a href="mailto:info@hydrogen.com">
+          <img src="../assets/email.svg" alt="" onerror="this.style.display='none'">
+          Send email
+        </a>
+        <a href="https://maps.google.com/?q=Cairo,Egypt" target="_blank">
+          <img src="../assets/location.svg" alt="" onerror="this.style.display='none'">
+          Visit us
+        </a>
+      </div>
+
+    </div>
+    <div class="footer-bottom">
+      © 2026 HydroGen — All rights reserved.
+    </div>
+  </footer>
+  <script src="./reports.js"></script>  
+ </body>
+ </html>
