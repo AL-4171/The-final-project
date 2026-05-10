@@ -12,6 +12,7 @@
   <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
   <link rel="stylesheet" href="about.css" />
+  <link rel="stylesheet" href="../chatbot/chatbot.css" />
 </head>
 
 <body>
@@ -28,26 +29,10 @@
           <a href="../dashboard/dashboard.html">Dashboard</a>
           <a href="../irrigation/irrigation.html">Irrigation</a>
           <a href="../analytics/analytics.html">Analytics</a>
-          <div class="nav-dropdown">
-
-            <button class="reports-trigger" id="reportsBtnDesktop">
-              Reports
-              <span class="arrow-icon" id="reportsArrow">
-                <svg width="14" height="14" viewBox="0 0 24 24" fill="none">
-                  <path d="M6 9L12 15L18 9" stroke="currentColor" stroke-width="2" stroke-linecap="round" />
-                </svg>
-              </span></span>
-            </button>
-
-            <div class="nav-submenu" id="reportsMenuDesktop">
-              <a href="../daily/daily.html">daily</a>
-              <a href="../weekly/weekly.html">weekly</a>
-              <a href="../monthly/monthly.html">monthly</a>
-
-            </div>
-          </div>
+          <a href="../reports/reports.html" >Reports</a>
           <a href="../settings/settings.html">Settings</a>
         </div>
+   
       </div>
     </nav>
 
@@ -101,34 +86,16 @@
 
   <div class="menu-overlay" id="menuOverlay"></div>
 
-  <!-- SIDEBAR -->
+  <!-- ======================== SIDEBAR ======================== -->
   <div class="side-menu" id="sideMenu">
     <button class="close-btn" id="closeBtn">✕</button>
-    <a href="../home/Home.html" class="menu-item"> <img src="../assets/Home.svg" class="icon">Home</a>
-    <a href="../dashboard/dashboard.html" class="menu-item active"><img src="../assets/Vector 48 (Stroke).svg"
-        class="icon">Dashboard</a>
-    <a href="../irrigation/irrigation.html" class="menu-item"><img src="../assets/water-drop 5.svg"
-        class="icon">Irrigation</a>
-    <a href="../analytics/analytics.html" class="menu-item"><img src="../assets/Trending-up.svg"
-        class="icon">Analytics</a>
+    <a href="../home/Home.html" class="menu-item"><img src="../assets/Home.svg" class="icon">Home</a>
+    <a href="../dashboard/dashboard.html" class="menu-item"><img src="../assets/Vector 48 (Stroke).svg" class="icon">Dashboard</a>
+    <a href="../irrigation/irrigation.html" class="menu-item"><img src="../assets/water-drop 5.svg" class="icon">Irrigation</a>
+    <a href="../analytics/analytics.html" class="menu-item"><img src="../assets/Trending-up.svg" class="icon">Analytics</a>
+    <a href="../reports/reports.html" class="menu-item"><img src="../assets/reports.svg" class="icon">Reports</a>
     <a href="../settings/settings.html" class="menu-item"><img src="../assets/settings-01.svg" class="icon">Settings</a>
-    <div class="reports-section">
-
-      <a href="#" class="menu-item reports-toggle" id="reportsBtnMobile">
-        <img src="../assets/reports.svg" class="icon">
-        <span>Reports</span>
-        <span class="report-arrow">›</span>
-      </a>
-
-      <div class="reports-submenu" id="reportsMenuMobile">
-        <a href="../daily/daily.html" class="menu-item sub-link">Daily Reports</a>
-        <a href="../weekly/weekly.html" class="menu-item sub-link">Weekly Reports</a>
-        <a href="../monthly/monthly.html" class="menu-item sub-link">Monthly Reports</a>
-      </div>
-
-    </div>
   </div>
-
   <section class="about-hero">
 
     <h1>
@@ -239,7 +206,7 @@
 
         <div class="member">
           <img src="team5.jpg">
-          <h4>Kaber Abdelhameed Shawqi</h4>
+          <h4>Kaber Abd-Elhamid Shawky Elredeny</h4>
           <p>Backend Developer</p>
         </div>
 
@@ -267,6 +234,24 @@
     </div>
 
   </section>
+<!-- Chatbot -->
+<div id="chatIcon" onclick="toggleChat()">
+  <i class="fas fa-robot"></i>
+</div>
+
+<div id="chatWindow">
+  <div class="chat-header">🤖 HydroGen AI Assistant</div>
+  <div id="chatBox">
+    <div class="msg ai">
+      <span><b>🤖 HydroGen AI:</b><br>👋 Hello! I'm your intelligent agricultural assistant! Ask me anything about HydroGen.</span>
+    </div>
+  </div>
+  <div class="suggestions"></div>
+  <div class="chat-input">
+    <input id="userInput" placeholder="Ask me anything...">
+    <button onclick="sendChatMessage()">Send</button>
+  </div>
+</div>
 
   <footer class="footer">
     <div class="footer-grid">
@@ -323,6 +308,7 @@
   <script src="https://www.gstatic.com/firebasejs/10.7.1/firebase-database-compat.js"></script>
   <script src="../firebase/firebase-config.js"></script>
   <script src="../about/about.js"></script>
+  <script src="../chatbot/chatbot.js"></script>
   <script src="../theme/theme.js"></script>
   <script>
     (function () { if (!localStorage.getItem("hydroUser")) window.location.replace("../landing/landing.html"); })();

@@ -10,13 +10,15 @@
     <link rel="stylesheet" href="../bootstrap-custom.css" />
     <link rel="stylesheet" href="../theme/design-system.css" />
     <link rel="stylesheet" href="../home/Home.css" />
+    <link rel="stylesheet" href="../chatbot/chatbot.css"/>
     <link rel="stylesheet" href="dashboard.css" />
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/chartjs-adapter-date-fns"></script>
-  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
     <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
+    <!-- Skycons for animated weather icons -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/skycons/1396634940/skycons.js"></script>
 </head>
-
 <body>
   <header class="header">
     <nav class="main-nav">
@@ -28,27 +30,10 @@
           <span class="divider"></span>
         </a>
         <div class="nav-links">
-          <a href="../dashboard/dashboard.html">Dashboard</a>
+          <a href="../dashboard/dashboard.html" class="active" >Dashboard</a>
           <a href="../irrigation/irrigation.html">Irrigation</a>
           <a href="../analytics/analytics.html">Analytics</a>
-          <div class="nav-dropdown">
-
-            <button class="reports-trigger" id="reportsBtnDesktop">
-              Reports
-              <span class="arrow-icon" id="reportsArrow">
-                  <svg width="14" height="14" viewBox="0 0 24 24" fill="none">
-                    <path d="M6 9L12 15L18 9" stroke="currentColor" stroke-width="2" stroke-linecap="round" />
-                  </svg>
-                </span></span>
-            </button>
-
-            <div class="nav-submenu" id="reportsMenuDesktop">
-              <a href="../daily/daily.html">daily</a>
-              <a href="../weekly/weekly.html">weekly</a>
-              <a href="../monthly/monthly.html">monthly</a>
-
-            </div>
-          </div>
+          <a href="../reports/reports.html">Reports</a>
           <a href="../settings/settings.html">Settings</a>
         </div>
       </div>
@@ -104,32 +89,16 @@
 
   <div class="menu-overlay" id="menuOverlay"></div>
 
-  <!-- SIDEBAR -->
-  <div class="side-menu" id="sideMenu">
+ <!-- ======================== SIDEBAR ======================== -->
+ <div class="side-menu" id="sideMenu">
     <button class="close-btn" id="closeBtn">✕</button>
-    <a href="../home/Home.html" class="menu-item"> <img src="../assets/Home.svg" class="icon">Home</a>
-    <a href="../dashboard/dashboard.html" class="menu-item active"><img src="../assets/Vector 48 (Stroke).svg"
-        class="icon">Dashboard</a>
-    <a href="../irrigation/irrigation.html" class="menu-item"><img src="../assets/water-drop 5.svg"
-        class="icon">Irrigation</a>
-    <a href="../analytics/analytics.html" class="menu-item"><img src="../assets/Trending-up.svg"
-        class="icon">Analytics</a>
+    <a href="../home/Home.html" class="menu-item"><img src="../assets/Home.svg" class="icon">Home</a>
+    <a href="../dashboard/dashboard.html" class="menu-item active"><img src="../assets/Vector 48 (Stroke).svg" class="icon">Dashboard</a>
+    <a href="../irrigation/irrigation.html" class="menu-item"><img src="../assets/water-drop 5.svg" class="icon">Irrigation</a>
+    <a href="../analytics/analytics.html" class="menu-item"><img src="../assets/Trending-up.svg" class="icon">Analytics</a>
+    <a href="../reports/reports.html" class="menu-item"><img src="../assets/reports.svg" class="icon">Reports</a>
     <a href="../settings/settings.html" class="menu-item"><img src="../assets/settings-01.svg" class="icon">Settings</a>
-<div class="reports-section">
-
-  <a href="#" class="menu-item reports-toggle" id="reportsBtnMobile">
-    <img src="../assets/reports.svg" class="icon">
-    <span>Reports</span>
-    <span class="report-arrow">›</span>
-  </a>
-
-  <div class="reports-submenu" id="reportsMenuMobile">
-    <a href="../daily/daily.html" class="menu-item sub-link">Daily Reports</a>
-    <a href="../weekly/weekly.html" class="menu-item sub-link">Weekly Reports</a>
-    <a href="../monthly/monthly.html" class="menu-item sub-link">Monthly Reports</a>
   </div>
-
-</div>
   </div>
 
 
@@ -147,8 +116,8 @@
                 </p>
 
                 <div class="hero-buttons">
-                    <button class="btn-primary" data-link="../home/Home.html">System Overview</button>
-                    <button class="btn-secondary" data-link="../settings/settings.html">Control Panel</button>
+                    <button class="btn-primary" onclick="window.location.href='../home/Home.html'">System Overview</button>
+                    <button class="btn-secondary" onclick="window.location.href='../settings/settings.html'">Control Panel</button>
                 </div>
             </div>
         </div>
@@ -166,65 +135,59 @@
         <div class="sensors-grid">
 
 
-            <div class="tank-container">
-                <div class="bento-card  w-80 text-center">
-                    <h5 class="bento-title mb-3">Water Storage <img src="../assets/waterdrop.svg" width="22" alt="">
-                    </h5>
-                    <div class="position-relative d-inline-block" style="margin: 0 auto;">
-                        <div class="tank-3d">
-                            <div class="bubbles-container">
-                                <div class="bubble-item"></div>
-                                <div class="bubble-item"></div>
-                                <div class="bubble-item"></div>
-                                <div class="bubble-item"></div>
-                                <div class="bubble-item"></div>
-                                <div class="bubble-item"></div>
-                            </div>
-                            <div id="tankLevelFill" class="water-fill" style="height: 0%;">
-                                <div class="water-wave-animation"></div>
-                                <div class="water-wave-animation wave-2"></div>
-                                <div class="water-wave-animation wave-3"></div>
-                            </div>
-                            <div id="tankLevelPercent" class="tank-percent-label">0%</div>
-                            <div class="tank-scale-markers">
-                                <div class="tick-marker" style="bottom: 3%"><span>0%</span></div>
-                                <div class="tick-marker" style="bottom: 25%"><span>25%</span></div>
-                                <div class="tick-marker" style="bottom: 50%"><span>50%</span></div>
-                                <div class="tick-marker" style="bottom: 75%"><span>75%</span></div>
-                                <div class="tick-marker" style="bottom: 97%"><span>100%</span></div>
-                            </div>
+                  <!-- Tank Container - Add prediction display -->
+        <div class="tank-container">
+            <div class="bento-card w-80 text-center">
+                <h5 class="bento-title mb-3">Water Storage <img src="../assets/waterdrop.svg" width="22" alt=""></h5>
+                <div class="position-relative d-inline-block" style="margin: 0 auto;">
+                    <div class="tank-3d">
+                        <div class="bubbles-container">
+                            <div class="bubble-item"></div>
+                            <div class="bubble-item"></div>
+                            <div class="bubble-item"></div>
+                            <div class="bubble-item"></div>
+                            <div class="bubble-item"></div>
+                            <div class="bubble-item"></div>
                         </div>
-                        <div class="tank-base-shadow"></div>
-                    </div>
-                    <div class="d-flex justify-content-between mt-4">
-                        <div class="text-center">
-                            <small>Current Level</small>
-                            <strong id="tankLevelCm" class="d-block text-primary">-- L</strong>
-                            <small id="tankLevelCmValue" class="text-muted">-- cm</small>
-                        </div>
-                        <div class="text-center">
-                            <small>Capacity</small>
-                            <strong class="d-block">2 Liters</strong>
-                            <small>30 cm</small>
+                        <div id="tankLevelFill" class="water-fill" style="height: 0%;"></div>
+                        <div id="tankLevelPercent" class="tank-percent-label">0%</div>
+                        <div class="tank-scale-markers">
+                            <div class="tick-marker" style="bottom: 3%"><span>0%</span></div>
+                            <div class="tick-marker" style="bottom: 25%"><span>25%</span></div>
+                            <div class="tick-marker" style="bottom: 50%"><span>50%</span></div>
+                            <div class="tick-marker" style="bottom: 75%"><span>75%</span></div>
+                            <div class="tick-marker" style="bottom: 97%"><span>100%</span></div>
                         </div>
                     </div>
-                    <div class="tank-progress-card">
-
-                        <div class="progress-header">
-                            <span>Water Storage Level</span>
-                            <span id="tankPercentText">0%</span>
-                        </div>
-
-                        <div class="progress-bar">
-                            <div id="tankProgressFill"></div>
-                        </div>
-
-                        <div class="progress-footer">
-                            <span id="tankLitersText">-- / -- L</span>
-                        </div>
-
+                    <div class="tank-base-shadow"></div>
+                </div>
+                <div class="d-flex justify-content-between mt-4">
+                    <div class="text-center">
+                        <small>Current Level</small>
+                        <strong id="tankLevelCm" class="d-block text-primary">-- L</strong>
+                        <small id="tankLevelCmValue" class="text-muted">-- cm</small>
+                    </div>
+                    <div class="text-center">
+                        <small>Total Capacity</small>
+                        <strong id="tankCapacityText" class="d-block">-- Liters</strong>
+                        <small id="tankCapacityCm" class="text-muted">-- cm</small>
                     </div>
                 </div>
+                
+                <div class="tank-progress-card">
+                    <div class="progress-header">
+                        <span>Water Storage Level</span>
+                        <span id="tankPercentText">0%</span>
+                    </div>
+                    <div class="progress-bar">
+                        <div id="tankProgressFill"></div>
+                    </div>
+                    <div class="progress-footer">
+                        <span id="tankLitersText">-- / -- L</span>
+                    </div>
+                </div>
+            </div>
+        
 
             </div>
 
@@ -376,47 +339,47 @@
         </div>
 
 
-        <div class="weather-card ">
-            <div class="d-flex justify-content-between align-items-center ">
+        <div class="weather-card">
+            <div class="d-flex justify-content-between align-items-center">
                 <div>
                     <h5 class="mb-0">🌦 Smart Weather Intelligence</h5>
-                    <p class="text-white-50 small ">Real-time forecast</p>
+                    <p class="text-white-50 small">Real-time forecast</p>
                 </div>
                 <button onclick="loadWeather()" id="weatherRefreshBtn" class="weather-refresh-btn">
                     <i class="fas fa-sync-alt"></i> Refresh
                 </button>
             </div>
             <div id="weatherMain"></div>
-            <div id="weatherForecast" class="forecast-horizontal "></div>
+            <div id="weatherForecast" class="forecast-horizontal"></div>
         </div>
 
 
 
+<!-- Chatbot - Universal from chatbot folder -->
+<div id="chatIcon" onclick="toggleChat()">
+    <i class="fas fa-robot"></i>
+</div>
 
-        <!-- Chatbot -->
-        <div id="chatIcon" onclick="toggleChat()">
-            <i class="fas fa-robot"></i>
+<div id="chatWindow">
+    <div class="chat-header">🤖 HydroGen AI Assistant</div>
+    <div id="chatBox">
+        <div class="msg ai">
+            <span><b>🤖 HydroGen AI:</b><br>👋 Hello! Ask me about soil moisture, watering, or weather!</span>
         </div>
-
-        <div id="chatWindow">
-            <div class="chat-header">HydroGen AI Assistant 🤖</div>
-            <div id="chatBox">
-                <div class="msg ai">
-                    <span><b>🤖 HydroGen AI:</b><br>👋 Hello! I'm your irrigation assistant. Ask me about soil moisture,
-                        watering schedules, or weather forecasts!</span>
-                </div>
-            </div>
-            <div class="suggestions">
-                <button onclick="quickAsk('Soil moisture level?')" style="color: #1f2937;">🌱 Soil Health</button>
-                <button onclick="quickAsk('Should I water?')" style="color: #1f2937;">🚰 Watering</button>
-                <button onclick="quickAsk('Water level?')" style="color: #1f2937;">💧 Tank Level</button>
-                <button onclick="quickAsk('Weather forecast?')" style="color: #1f2937;">🌤️ Weather</button>
-            </div>
-            <div class="chat-input">
-                <input id="userInput" placeholder="Ask me anything...">
-                <button onclick="sendMessage()">Send</button>
-            </div>
-        </div>
+    </div>
+    <div class="suggestions">
+        <button onclick="quickAsk('Should I water?')">💧 Watering</button>
+        <button onclick="quickAsk('Soil moisture?')">🌱 Soil</button>
+        <button onclick="quickAsk('Water level?')">💦 Tank</button>
+        <button onclick="quickAsk('Weather forecast?')">🌤️ Weather</button>
+        <button onclick="quickAsk('How many zones?')">🏞️ Zones</button>
+        <button onclick="quickAsk('System status')">📊 Status</button>
+    </div>
+    <div class="chat-input">
+        <input id="userInput" placeholder="Ask me anything...">
+        <button onclick="sendMessage()">Send</button>
+    </div>
+</div>
 
         <audio id="alertSound" src="https://actions.google.com/sounds/v1/alarms/alarm_clock.ogg" preload="auto"></audio>
 
@@ -467,13 +430,14 @@
         </div>
     </footer>
 
-
     <script src="../theme/theme.js"></script>
     <script src="https://www.gstatic.com/firebasejs/10.7.1/firebase-app-compat.js"></script>
     <script src="https://www.gstatic.com/firebasejs/10.7.1/firebase-auth-compat.js"></script>
     <script src="https://www.gstatic.com/firebasejs/10.7.1/firebase-database-compat.js"></script>
     <script src="../firebase/firebase-config.js"></script>
+    <script src="../chatbot/chatbot.js"></script>
     <script src="dashboard.js"></script>
+   
 </body>
 
 </html>
